@@ -2,6 +2,24 @@ import { PatientProfile } from "@/types/medical";
 
 export const mockPatients: PatientProfile[] = [
   {
+    id: "p-004",
+    fullName: "Sarina Salas",
+    documentId: "V-16004539",
+    birthDate: "1991-06-10",
+    phone: "+1 809-000-4539",
+    email: "ssalas@danaconnect.com",
+    address: "Av. Principal 45, Ciudad Demo",
+    company: "danaconnect",
+    historyNumber: "HC-0004539",
+    insurer: "Cobertura Demo",
+    plan: "Empresarial",
+    site: "Sede Central",
+    consents: [
+      { id: "c-8", name: "Tratamiento de datos clinicos", accepted: true, updatedAt: "2026-02-20" },
+      { id: "c-9", name: "Comunicacion de resultados", accepted: true, updatedAt: "2026-02-20" },
+    ],
+  },
+  {
     id: "p-001",
     fullName: "Alicia Navarro",
     documentId: "V-12000001",
