@@ -11,104 +11,24 @@ import { Label } from "@/components/ui/Label";
 import { useAuditStore } from "@/features/audit/useAuditStore";
 import { useDemoRoleStore } from "@/features/demo/useDemoRoleStore";
 import { useResultsStore } from "@/features/results/useResultsStore";
-import { mockOrders } from "@/mocks/orders";
 import { mockPatients } from "@/mocks/patients";
 
-const patientNav = [
-  { to: "/results/overview", label: "Resultados Medicos" },
-  { to: "/results/labs", label: "Mis Resultados" },
-];
-
-const roleLabel: Record<string, string> = {
-  patient: "Paciente",
-  staff: "Staff",
-  admin: "Admin",
-};
+const patientNav = [{ to: "/results/labs", label: "Mis Resultados" }];
 
 type DocumentTypeFilter = "all" | "pdf" | "image";
 
 function useActivePatient() {
-  const role = useDemoRoleStore((s) => s.role);
   const patientSession = useDemoRoleStore((s) => s.patientSession);
 
   return useMemo(() => {
-    if (role === "patient") {
-      if (!patientSession) return null;
-      return mockPatients.find((item) => item.id === patientSession.patientId) || null;
-    }
-    return mockPatients[0] || null;
-  }, [role, patientSession]);
+    if (!patientSession) return null;
+    return mockPatients.find((item) => item.id === patientSession.patientId) || null;
+  }, [patientSession]);
 }
 
 function useActor() {
   const patientSession = useDemoRoleStore((s) => s.patientSession);
   return patientSession ? `patient:${patientSession.documentId}` : "demo-user";
-}
-
-function useOverviewData() {
-  const patient = useActivePatient();
-  const role = useDemoRoleStore((s) => s.role);
-
-  return useMemo(() => {
-    if (!patient) return null;
-    const activeOrders = mockOrders.filter((o) => o.patientId === patient.id && o.status !== "entregado").length;
-
-    return {
-      patient,
-      activeOrders,
-      roleText: roleLabel[role] || role,
-    };
-  }, [patient, role]);
-}
-
-function SummaryBlocks() {
-  const summary = useOverviewData();
-
-  if (!summary) {
-    return (
-      <Card>
-        <h2 className="text-lg font-semibold">No hay resultados para esta cédula</h2>
-        <p className="mt-2 text-sm text-brand-muted">Verifica el documento e intenta nuevamente.</p>
-      </Card>
-    );
-  }
-
-  const { patient, activeOrders, roleText } = summary;
-
-  return (
-    <>
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <p className="text-xs text-brand-muted">Paciente</p>
-          <p className="text-lg font-semibold">{patient.fullName}</p>
-          <p className="text-xs text-brand-muted">HC: {patient.historyNumber}</p>
-        </Card>
-        <Card>
-          <p className="text-xs text-brand-muted">Ordenes activas</p>
-          <p className="text-2xl font-bold text-brand-primary">{activeOrders}</p>
-        </Card>
-        <Card>
-          <p className="text-xs text-brand-muted">Rol demo</p>
-          <p className="text-lg font-semibold">{roleText}</p>
-        </Card>
-      </div>
-
-      <Card className="mt-4">
-        <h2 className="mb-2 text-base font-semibold">Informacion general del paciente</h2>
-        <div className="grid gap-2 text-sm md:grid-cols-2">
-          <p><strong>Nombre:</strong> {patient.fullName}</p>
-          <p><strong>Documento:</strong> {patient.documentId}</p>
-          <p><strong>Fecha de nacimiento:</strong> {patient.birthDate}</p>
-          <p><strong>Telefono:</strong> {patient.phone}</p>
-          <p><strong>Correo:</strong> {patient.email}</p>
-          <p><strong>Direccion:</strong> {patient.address}</p>
-          <p><strong>Historia clinica:</strong> {patient.historyNumber}</p>
-          <p><strong>Aseguradora:</strong> {patient.insurer}</p>
-          <p><strong>Plan:</strong> {patient.plan}</p>
-        </div>
-      </Card>
-    </>
-  );
 }
 
 function resolveDocumentUrl(doc: ResultDocument) {
@@ -117,6 +37,33 @@ function resolveDocumentUrl(doc: ResultDocument) {
 
 function resolveDocumentType(doc: ResultDocument): "pdf" | "image" {
   return doc.type || doc.fileType;
+}
+
+function PatientInfoCard() {
+  const patient = useActivePatient();
+
+  if (!patient) {
+    return (
+      <Card>
+        <h2 className="text-lg font-semibold">No hay resultados para esta cédula</h2>
+        <p className="mt-2 text-sm text-brand-muted">Ingresa con una cédula válida para consultar documentos.</p>
+      </Card>
+    );
+  }
+
+  return (
+    <Card>
+      <h2 className="mb-2 text-base font-semibold">Información general del paciente</h2>
+      <div className="grid gap-2 text-sm md:grid-cols-2">
+        <p><strong>Nombre:</strong> {patient.fullName}</p>
+        <p><strong>Documento:</strong> {patient.documentId}</p>
+        <p><strong>Fecha de nacimiento:</strong> {patient.birthDate}</p>
+        <p><strong>Teléfono:</strong> {patient.phone}</p>
+        <p><strong>Correo:</strong> {patient.email}</p>
+        <p><strong>Empresa:</strong> {patient.company}</p>
+      </div>
+    </Card>
+  );
 }
 
 function DocumentPreviewModal({
@@ -159,32 +106,13 @@ function DocumentPreviewModal({
   );
 }
 
-export function PatientOverviewPage() {
-  const summary = useOverviewData();
-
-  return (
-    <AuthedLayout title="Resultados Medicos" items={patientNav}>
-      <Alert>Modo demostracion</Alert>
-      <SummaryBlocks />
-      {summary ? (
-        <Card className="mt-4">
-          <p className="text-sm text-brand-muted">Accede a todos tus archivos en Mis Resultados.</p>
-          <Link to="/results/labs" className="mt-3 inline-block">
-            <Button>Ir a Mis Resultados</Button>
-          </Link>
-        </Card>
-      ) : null}
-    </AuthedLayout>
-  );
-}
-
 export function PatientMedicalResultsPage() {
   const [searchParams] = useSearchParams();
   const addEvent = useAuditStore((s) => s.addEvent);
   const markAsViewed = useResultsStore((s) => s.markAsViewed);
   const getDocumentsForPatient = useResultsStore((s) => s.getDocumentsForPatient);
   const actor = useActor();
-  const summary = useOverviewData();
+  const patient = useActivePatient();
 
   const [query, setQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<DocumentTypeFilter>("all");
@@ -193,14 +121,15 @@ export function PatientMedicalResultsPage() {
   const [selectedDoc, setSelectedDoc] = useState<ResultDocument | null>(null);
 
   const docs = useMemo(() => {
-    if (!summary) return [];
-    return getDocumentsForPatient(summary.patient.id, {
+    if (!patient) return [];
+    return getDocumentsForPatient(patient.id, {
+      documentId: patient.documentId,
       query,
       type: typeFilter,
       from: fromDate,
       to: toDate,
     });
-  }, [summary, getDocumentsForPatient, query, typeFilter, fromDate, toDate]);
+  }, [patient, getDocumentsForPatient, query, typeFilter, fromDate, toDate]);
 
   const openDocument = (doc: ResultDocument) => {
     setSelectedDoc(doc);
@@ -214,13 +143,14 @@ export function PatientMedicalResultsPage() {
   };
 
   return (
-    <AuthedLayout title="Mis Resultados" items={patientNav}>
-      <Alert>Nuevo resultado disponible. WhatsApp solo notifica.</Alert>
+    <AuthedLayout title="Resultados Médicos" items={patientNav}>
+      <Alert>Modo demostración</Alert>
       {searchParams.get("token") ? <Alert>Acceso por enlace temporal (demo).</Alert> : null}
 
-      <SummaryBlocks />
+      <PatientInfoCard />
 
       <Card className="mt-4">
+        <h2 className="mb-3 text-base font-semibold">Mis Resultados</h2>
         <div className="grid gap-3 md:grid-cols-4">
           <div className="md:col-span-2">
             <Label htmlFor="search-doc">Buscar documento</Label>
@@ -261,10 +191,10 @@ export function PatientMedicalResultsPage() {
         <p className="mt-3 text-sm text-brand-muted">Mostrando {docs.length} documentos</p>
       </Card>
 
-      {!summary ? (
+      {!patient ? (
         <Card className="mt-4">
           <h2 className="text-lg font-semibold">No hay resultados para esta cédula</h2>
-          <p className="mt-2 text-sm text-brand-muted">Vuelve a ingresar con un documento valido.</p>
+          <p className="mt-2 text-sm text-brand-muted">Vuelve a ingresar con un documento válido.</p>
           <Link to="/access" className="mt-4 inline-block">
             <Button>Ingresar cédula</Button>
           </Link>
@@ -300,11 +230,7 @@ export function PatientMedicalResultsPage() {
                   onClick={() => openDocument(doc)}
                 >
                   {isImage ? (
-                    <img
-                      src={doc.thumbnailUrl || url}
-                      alt={doc.title || doc.studyName}
-                      className="h-full w-full object-cover"
-                    />
+                    <img src={doc.thumbnailUrl || url} alt={doc.title || doc.studyName} className="h-full w-full object-cover" />
                   ) : (
                     <div className="flex h-full items-center justify-center bg-brand-ink/5">
                       <div className="text-center">
@@ -335,6 +261,10 @@ export function PatientMedicalResultsPage() {
       <DocumentPreviewModal document={selectedDoc} onClose={() => setSelectedDoc(null)} onDownload={downloadDocument} />
     </AuthedLayout>
   );
+}
+
+export function PatientOverviewPage() {
+  return <Navigate to="/results/labs" replace />;
 }
 
 export function PatientOrdersExamsPage() {

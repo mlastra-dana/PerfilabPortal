@@ -3,6 +3,7 @@ import { ResultDocument } from "@/app/types";
 import { mockDocuments } from "@/mocks/documents";
 
 export type DocumentFilters = {
+  documentId?: string;
   query?: string;
   type?: "all" | "pdf" | "image";
   from?: string;
@@ -30,10 +31,11 @@ export const useResultsStore = create<ResultsState>((set, get) => ({
     const type = filters?.type || "all";
     const from = filters?.from || "";
     const to = filters?.to || "";
+    const documentId = (filters?.documentId || "").trim().toUpperCase();
 
     return get()
       .documents
-      .filter((doc) => doc.patientId === patientId)
+      .filter((doc) => doc.patientId === patientId || (documentId && (doc.patientDocument || "").toUpperCase() === documentId))
       .filter((doc) => {
         const date = (doc.date || doc.studyDate || "").slice(0, 10);
         const title = (doc.title || doc.studyName || "").toLowerCase();

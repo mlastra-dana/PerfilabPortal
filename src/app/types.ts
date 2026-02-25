@@ -33,6 +33,7 @@ export type Patient = {
   phone: string;
   email: string;
   address: string;
+  company?: string;
   historyNumber: string;
   insurer: string;
   plan: string;
