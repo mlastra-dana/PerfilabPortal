@@ -13,7 +13,6 @@ export function PublicLayout({ children }: { children: ReactNode }) {
               alt="Perfilab"
               className="h-8 w-auto max-w-[180px] object-contain sm:max-w-[220px]"
             />
-            <p className="text-sm font-semibold text-brand-text sm:text-base">Resultados Médicos</p>
           </div>
           <nav className="hidden items-center gap-6 text-sm text-brand-muted md:flex">
             <a href="#nosotros">Nosotros</a>
