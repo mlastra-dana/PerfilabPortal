@@ -76,8 +76,11 @@ export function AccessPage() {
     <PublicLayout>
       <section className="mx-auto max-w-xl px-4 py-16">
         <Card>
-          <h1 className="text-2xl font-bold">Acceso por cédula</h1>
-          <p className="mt-2 text-sm text-brand-muted">Modo demostracion: sin contrasena.</p>
+          <div className="mb-4 flex justify-center">
+            <img src="/brand/perfilab-logo.png" alt="Perfilab" className="h-8 w-auto object-contain sm:h-10" />
+          </div>
+          <h1 className="text-center text-2xl font-bold">Portal de Resultados Médicos</h1>
+          <p className="mt-2 text-center text-sm text-brand-muted">Ingrese su cédula para ver sus resultados</p>
           <form className="mt-5 space-y-3" onSubmit={onSubmit}>
             <div>
               <Label htmlFor="document-id">Cedula / Documento</Label>

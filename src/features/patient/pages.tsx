@@ -106,6 +106,65 @@ function DocumentPreviewModal({
   );
 }
 
+function buildShareUrl(documentId: string) {
+  return `https://demo.perfilab.com/r/${documentId}`;
+}
+
+function ShareDocumentModal({
+  document,
+  onClose,
+}: {
+  document: ResultDocument | null;
+  onClose: () => void;
+}) {
+  const [copied, setCopied] = useState(false);
+
+  if (!document) return null;
+
+  const shareUrl = buildShareUrl(document.id);
+  const message = `Hola, te comparto mi resultado médico: ${shareUrl}`;
+  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+  const mailtoUrl = `mailto:?subject=${encodeURIComponent("Resultado Médico Perfilab")}&body=${encodeURIComponent(`Te comparto mi resultado: ${shareUrl}`)}`;
+
+  const onCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      setCopied(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" role="dialog" aria-modal="true">
+      <Card className="w-full max-w-lg">
+        <h3 className="text-lg font-semibold">Compartir resultado</h3>
+        <p className="mt-1 text-sm text-brand-muted">{document.title || document.studyName}</p>
+
+        <div className="mt-4">
+          <Label htmlFor="secure-link">Enlace seguro (demo)</Label>
+          <Input id="secure-link" value={shareUrl} readOnly />
+        </div>
+
+        <div className="mt-4 grid gap-2 sm:grid-cols-3">
+          <Button variant="ghost" onClick={onCopy}>{copied ? "Copiado" : "Copiar enlace"}</Button>
+          <a href={whatsappUrl} target="_blank" rel="noreferrer">
+            <Button className="w-full">Enviar por WhatsApp</Button>
+          </a>
+          <a href={mailtoUrl}>
+            <Button variant="dark" className="w-full">Enviar por correo</Button>
+          </a>
+        </div>
+
+        <div className="mt-4 flex justify-end">
+          <Button variant="ghost" onClick={onClose}>Cerrar</Button>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
 export function PatientMedicalResultsPage() {
   const [searchParams] = useSearchParams();
   const addEvent = useAuditStore((s) => s.addEvent);
@@ -119,6 +178,7 @@ export function PatientMedicalResultsPage() {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [selectedDoc, setSelectedDoc] = useState<ResultDocument | null>(null);
+  const [shareDoc, setShareDoc] = useState<ResultDocument | null>(null);
 
   const docs = useMemo(() => {
     if (!patient) return [];
@@ -250,6 +310,7 @@ export function PatientMedicalResultsPage() {
                   <div className="flex gap-2">
                     <Button variant="ghost" className="flex-1" onClick={() => openDocument(doc)}>Ver</Button>
                     <Button className="flex-1" onClick={() => downloadDocument(doc)}>Descargar</Button>
+                    <Button variant="dark" className="flex-1" onClick={() => setShareDoc(doc)}>Compartir</Button>
                   </div>
                 </div>
               </Card>
@@ -259,6 +320,7 @@ export function PatientMedicalResultsPage() {
       )}
 
       <DocumentPreviewModal document={selectedDoc} onClose={() => setSelectedDoc(null)} onDownload={downloadDocument} />
+      <ShareDocumentModal document={shareDoc} onClose={() => setShareDoc(null)} />
     </AuthedLayout>
   );
 }
