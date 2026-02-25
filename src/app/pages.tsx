@@ -12,7 +12,25 @@ import { mockPatients } from "@/mocks/patients";
 import { validateDemoToken } from "@/services/mock/tokenValidator";
 
 export function LandingPage() {
-  return <Navigate to="/access" replace />;
+  return (
+    <PublicLayout>
+      <section className="hero-pattern relative overflow-hidden">
+        <div className="relative mx-auto max-w-7xl px-4 py-24 text-white">
+          <h1 className="max-w-3xl text-4xl font-extrabold leading-tight md:text-6xl">Resultados Médicos</h1>
+          <p className="mt-4 max-w-xl text-base text-white/95 md:text-lg">
+            Consulta y descarga tus documentos de resultados de forma segura.
+          </p>
+          <div className="mt-8">
+            <Link to="/access">
+              <Button variant="dark" className="text-base">
+                Entrar a la demo
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+    </PublicLayout>
+  );
 }
 
 export function AccessPage() {
