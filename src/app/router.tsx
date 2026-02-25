@@ -1,5 +1,5 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import { LandingPage, LoginPage, NotFoundPage, TokenAccessPage } from "@/app/pages";
+import { AccessPage, LandingPage, LoginPage, NotFoundPage, TokenAccessPage } from "@/app/pages";
 import { AdminAuditPage, AdminPatientsPage, AdminUploadsPage } from "@/features/admin/pages";
 import {
   PatientClinicalDocumentsPage,
@@ -11,6 +11,7 @@ import {
 
 export const router = createBrowserRouter([
   { path: "/", element: <LandingPage /> },
+  { path: "/access", element: <AccessPage /> },
   { path: "/login", element: <LoginPage /> },
   { path: "/r/:token", element: <TokenAccessPage /> },
   { path: "/results", element: <Navigate to="/results/overview" replace /> },

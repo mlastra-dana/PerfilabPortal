@@ -4,7 +4,7 @@ export const mockPatients: PatientProfile[] = [
   {
     id: "p-001",
     fullName: "Alicia Navarro",
-    documentId: "DOC-FICT-1001",
+    documentId: "V-12000001",
     birthDate: "1990-04-18",
     phone: "+1 809-000-1001",
     email: "alicia.navarro@demo-mail.test",
@@ -21,7 +21,7 @@ export const mockPatients: PatientProfile[] = [
   {
     id: "p-002",
     fullName: "Marcos Varela",
-    documentId: "DOC-FICT-1002",
+    documentId: "V-12000002",
     birthDate: "1987-11-03",
     phone: "+1 809-000-1002",
     email: "marcos.varela@demo-mail.test",
@@ -38,7 +38,7 @@ export const mockPatients: PatientProfile[] = [
   {
     id: "p-003",
     fullName: "Daniela Rios",
-    documentId: "DOC-FICT-1003",
+    documentId: "V-12000003",
     birthDate: "1994-09-21",
     phone: "+1 809-000-1003",
     email: "daniela.rios@demo-mail.test",

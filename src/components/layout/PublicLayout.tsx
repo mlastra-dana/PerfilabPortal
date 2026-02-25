@@ -32,7 +32,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
             <span className="hidden rounded-pill bg-brand-primary2 px-4 py-2 text-xs font-semibold text-brand-ink2 sm:inline-flex">
               0212.819.47.50
             </span>
-            <Link to="/results/overview">
+            <Link to="/access">
               <Button>Resultados Médicos</Button>
             </Link>
           </div>

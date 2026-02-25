@@ -6,6 +6,8 @@ import { Alert } from "@/components/ui/Alert";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/Label";
 import { ResponsiveTable } from "@/components/ui/ResponsiveTable";
 import { Tabs } from "@/components/ui/Tabs";
 import { useAuditStore } from "@/features/audit/useAuditStore";
@@ -78,11 +80,44 @@ function TrendLine({ points, title, reference }: { points: Array<{ date: string;
   );
 }
 
+function formatDateInput(date: Date) {
+  return date.toISOString().slice(0, 10);
+}
+
+function toDateKey(value?: string) {
+  if (!value) return "";
+  return value.slice(0, 10);
+}
+
+function isWithinDateRange(dateKey: string, from: string, to: string) {
+  if (!dateKey) return !from && !to;
+  if (from && dateKey < from) return false;
+  if (to && dateKey > to) return false;
+  return true;
+}
+
+function useActivePatient() {
+  const role = useDemoRoleStore((s) => s.role);
+  const patientSession = useDemoRoleStore((s) => s.patientSession);
+
+  return useMemo(() => {
+    if (role === "patient" && patientSession) {
+      return mockPatients.find((item) => item.id === patientSession.patientId) || mockPatients[0];
+    }
+    return mockPatients[0];
+  }, [role, patientSession]);
+}
+
+function useActor() {
+  const patientSession = useDemoRoleStore((s) => s.patientSession);
+  return patientSession ? `patient:${patientSession.documentId}` : "demo-user";
+}
+
 export function PatientOverviewPage() {
   const role = useDemoRoleStore((s) => s.role);
   const [search] = useSearchParams();
   const setBanner = useDemoRoleStore((s) => s.setTokenAccessBanner);
-  const patient = mockPatients[0];
+  const patient = useActivePatient();
   const orders = mockOrders.filter((o) => o.patientId === patient.id);
 
   useEffect(() => {
@@ -148,113 +183,215 @@ export function PatientOverviewPage() {
 
 export function PatientMedicalResultsPage() {
   const addEvent = useAuditStore((s) => s.addEvent);
-  const orderResults = mockLabResults.filter((r) => r.patientId === "p-001");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const patient = useActivePatient();
+  const actor = useActor();
+
+  const appliedFrom = searchParams.get("from") || "";
+  const appliedTo = searchParams.get("to") || "";
+  const tokenParam = searchParams.get("token") || "";
+
+  const [fromDate, setFromDate] = useState(appliedFrom);
+  const [toDate, setToDate] = useState(appliedTo);
+
+  const orderResults = useMemo(() => mockLabResults.filter((r) => r.patientId === patient.id), [patient.id]);
   const [selectedOrderId, setSelectedOrderId] = useState(orderResults[0]?.orderId || "");
 
-  const selectedOrder = orderResults.find((r) => r.orderId === selectedOrderId) || orderResults[0];
+  useEffect(() => {
+    setFromDate(appliedFrom);
+    setToDate(appliedTo);
+  }, [appliedFrom, appliedTo]);
+
+  const filteredOrderResults = useMemo(
+    () =>
+      orderResults.filter((result) => {
+        const orderMeta = mockOrders.find((item) => item.id === result.orderId);
+        const filterDate = toDateKey(orderMeta?.resultDate || orderMeta?.requestedAt);
+        return isWithinDateRange(filterDate, appliedFrom, appliedTo);
+      }),
+    [orderResults, appliedFrom, appliedTo],
+  );
+
+  useEffect(() => {
+    if (!filteredOrderResults.length) {
+      setSelectedOrderId("");
+      return;
+    }
+
+    const selectedExists = filteredOrderResults.some((item) => item.orderId === selectedOrderId);
+    if (!selectedExists) {
+      setSelectedOrderId(filteredOrderResults[0].orderId);
+    }
+  }, [filteredOrderResults, selectedOrderId]);
+
+  const selectedOrder = filteredOrderResults.find((r) => r.orderId === selectedOrderId) || filteredOrderResults[0];
   const selectedMeta = mockOrders.find((o) => o.id === selectedOrder?.orderId);
+  const patientTrends = mockLabTrends.filter((trend) => trend.patientId === patient.id);
 
   useEffect(() => {
     if (selectedOrder) {
-      addEvent("document_view", "demo-user", `Visualizacion de orden ${selectedOrder.orderId}`);
+      addEvent("document_view", actor, `Visualizacion de orden ${selectedOrder.orderId}`);
     }
-  }, [selectedOrder?.orderId, addEvent]);
+  }, [selectedOrder?.orderId, addEvent, actor]);
+
+  const applyFilters = (nextFrom: string, nextTo: string) => {
+    const next = new URLSearchParams();
+    if (tokenParam) next.set("token", tokenParam);
+    if (nextFrom) next.set("from", nextFrom);
+    if (nextTo) next.set("to", nextTo);
+    setSearchParams(next);
+  };
+
+  const handleApply = () => {
+    applyFilters(fromDate, toDate);
+  };
+
+  const handleClear = () => {
+    setFromDate("");
+    setToDate("");
+    applyFilters("", "");
+  };
+
+  const applyQuickRange = (days: number) => {
+    const to = formatDateInput(new Date());
+    const from = formatDateInput(new Date(Date.now() - days * 24 * 60 * 60 * 1000));
+    setFromDate(from);
+    setToDate(to);
+    applyFilters(from, to);
+  };
 
   return (
     <AuthedLayout title="Mis Resultados Medicos" items={patientNav}>
-      <div className="grid gap-4 xl:grid-cols-[1fr_1.35fr]">
-        <Card>
-          <h2 className="mb-3 font-semibold">Ordenes con resultados</h2>
-          <div className="space-y-2">
-            {orderResults.map((order) => {
-              const orderInfo = mockOrders.find((o) => o.id === order.orderId);
-              return (
-                <button
-                  key={order.orderId}
-                  onClick={() => setSelectedOrderId(order.orderId)}
-                  className={`w-full rounded-xl border px-3 py-2 text-left ${selectedOrder?.orderId === order.orderId ? "border-brand-primary bg-brand-primary/10" : "border-brand-border"}`}
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="font-semibold">{orderInfo?.title || order.orderId}</p>
-                    <Badge tone={statusBadge(orderInfo?.status || "pendiente")}>{orderInfo?.status || "pendiente"}</Badge>
-                  </div>
-                  <p className="text-xs text-brand-muted">{order.exams.length} examenes · resultado {orderInfo?.resultDate || "pendiente"}</p>
-                </button>
-              );
-            })}
+      <Card>
+        <div className="grid gap-3 md:grid-cols-5">
+          <div>
+            <Label htmlFor="labs-from">Desde</Label>
+            <Input id="labs-from" type="date" value={fromDate} onChange={(event) => setFromDate(event.target.value)} />
           </div>
+          <div>
+            <Label htmlFor="labs-to">Hasta</Label>
+            <Input id="labs-to" type="date" value={toDate} onChange={(event) => setToDate(event.target.value)} />
+          </div>
+          <div className="md:col-span-3 md:flex md:items-end md:justify-end">
+            <div className="flex flex-wrap gap-2">
+              <Button variant="ghost" onClick={() => applyQuickRange(30)}>Ultimos 30 dias</Button>
+              <Button variant="ghost" onClick={() => applyQuickRange(90)}>Ultimos 90 dias</Button>
+              <Button onClick={handleApply}>Aplicar</Button>
+              <Button variant="dark" onClick={handleClear}>Limpiar</Button>
+            </div>
+          </div>
+        </div>
+        <p className="mt-3 text-sm text-brand-muted">Mostrando {filteredOrderResults.length} de {orderResults.length} resultados</p>
+      </Card>
+
+      {!filteredOrderResults.length ? (
+        <Card className="mt-4">
+          <h2 className="text-lg font-semibold">No hay resultados en ese rango</h2>
+          <p className="mt-2 text-sm text-brand-muted">Ajusta fechas o limpia los filtros para ver todo el historial.</p>
+          <Button className="mt-4" onClick={handleClear}>Limpiar filtros</Button>
         </Card>
+      ) : (
+        <>
+          <div className="mt-4 grid gap-4 xl:grid-cols-[1fr_1.35fr]">
+            <Card>
+              <h2 className="mb-3 font-semibold">Ordenes con resultados</h2>
+              <div className="space-y-2">
+                {filteredOrderResults.map((order) => {
+                  const orderInfo = mockOrders.find((o) => o.id === order.orderId);
+                  const filterDate = orderInfo?.resultDate || orderInfo?.requestedAt || "pendiente";
 
-        <Card>
-          {selectedOrder && selectedMeta ? (
-            <>
-              <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-                <div>
-                  <h3 className="text-lg font-semibold">{selectedMeta.title}</h3>
-                  <p className="text-xs text-brand-muted">Validado por {selectedOrder.validatedBy} {selectedOrder.validatedAt ? `el ${new Date(selectedOrder.validatedAt).toLocaleDateString()}` : "(en proceso)"}</p>
-                </div>
-                <Button
-                  onClick={() => {
-                    addEvent("download_clicked", "demo-user", `Descarga PDF ${selectedOrder.orderId}`);
-                    window.open(selectedOrder.pdfKey, "_blank");
-                  }}
-                >
-                  Descargar PDF
-                </Button>
+                  return (
+                    <button
+                      key={order.orderId}
+                      onClick={() => setSelectedOrderId(order.orderId)}
+                      className={`w-full rounded-xl border px-3 py-2 text-left ${selectedOrder?.orderId === order.orderId ? "border-brand-primary bg-brand-primary/10" : "border-brand-border"}`}
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="font-semibold">{orderInfo?.title || order.orderId}</p>
+                        <Badge tone={statusBadge(orderInfo?.status || "pendiente")}>{orderInfo?.status || "pendiente"}</Badge>
+                      </div>
+                      <p className="text-xs text-brand-muted">
+                        {order.exams.length} examenes · fecha {filterDate}
+                      </p>
+                    </button>
+                  );
+                })}
               </div>
+            </Card>
 
-              <p className="mb-3 text-sm text-brand-muted">{selectedOrder.notes}</p>
-
-              <div className="space-y-4">
-                {selectedOrder.exams.map((exam) => (
-                  <Card key={exam.panelId} className="p-3">
-                    <div className="mb-2 flex items-center justify-between gap-2">
-                      <p className="font-semibold">{exam.panelName}</p>
-                      <Badge tone={statusBadge(exam.status)}>{exam.status}</Badge>
+            <Card>
+              {selectedOrder && selectedMeta ? (
+                <>
+                  <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                      <h3 className="text-lg font-semibold">{selectedMeta.title}</h3>
+                      <p className="text-xs text-brand-muted">Validado por {selectedOrder.validatedBy} {selectedOrder.validatedAt ? `el ${new Date(selectedOrder.validatedAt).toLocaleDateString()}` : "(en proceso)"}</p>
                     </div>
-                    <ResponsiveTable
-                      data={exam.items}
-                      mobileTitle={(item) => item.displayName}
-                      columns={[
-                        { key: "param", header: "Parametro", render: (item) => item.displayName },
-                        { key: "value", header: "Valor", render: (item) => formatValue(item) },
-                        { key: "ref", header: "Rango ref", render: (item) => getReferenceText(item.referenceRange, item.unit) },
-                        {
-                          key: "flag",
-                          header: "Estado",
-                          render: (item) => <Badge tone={flagTone(item.flag)}>{flagLabel(item.flag)}</Badge>,
-                        },
-                        { key: "obs", header: "Observaciones", render: (item) => item.observation || "-" },
-                      ]}
-                    />
-                  </Card>
-                ))}
-              </div>
+                    <Button
+                      onClick={() => {
+                        addEvent("download_clicked", actor, `Descarga PDF ${selectedOrder.orderId}`);
+                        window.open(selectedOrder.pdfKey, "_blank");
+                      }}
+                    >
+                      Descargar PDF
+                    </Button>
+                  </div>
 
-              <div className="mt-4 overflow-hidden rounded-xl border border-brand-border">
-                <iframe src={selectedOrder.pdfKey} className="h-72 w-full" title="Vista previa PDF" />
-              </div>
-            </>
-          ) : null}
-        </Card>
-      </div>
+                  <p className="mb-3 text-sm text-brand-muted">{selectedOrder.notes}</p>
 
-      <div className="mt-4 grid gap-3 lg:grid-cols-2">
-        {mockLabTrends.map((trend) => (
-          <TrendLine
-            key={trend.parameterId}
-            title={`${trend.label} (${trend.unit})`}
-            reference={getReferenceText(trend.referenceRange, trend.unit)}
-            points={trend.points}
-          />
-        ))}
-      </div>
+                  <div className="space-y-4">
+                    {selectedOrder.exams.map((exam) => (
+                      <Card key={exam.panelId} className="p-3">
+                        <div className="mb-2 flex items-center justify-between gap-2">
+                          <p className="font-semibold">{exam.panelName}</p>
+                          <Badge tone={statusBadge(exam.status)}>{exam.status}</Badge>
+                        </div>
+                        <ResponsiveTable
+                          data={exam.items}
+                          mobileTitle={(item) => item.displayName}
+                          columns={[
+                            { key: "param", header: "Parametro", render: (item) => item.displayName },
+                            { key: "value", header: "Valor", render: (item) => formatValue(item) },
+                            { key: "ref", header: "Rango ref", render: (item) => getReferenceText(item.referenceRange, item.unit) },
+                            {
+                              key: "flag",
+                              header: "Estado",
+                              render: (item) => <Badge tone={flagTone(item.flag)}>{flagLabel(item.flag)}</Badge>,
+                            },
+                            { key: "obs", header: "Observaciones", render: (item) => item.observation || "-" },
+                          ]}
+                        />
+                      </Card>
+                    ))}
+                  </div>
+
+                  <div className="mt-4 overflow-hidden rounded-xl border border-brand-border">
+                    <iframe src={selectedOrder.pdfKey} className="h-72 w-full" title="Vista previa PDF" />
+                  </div>
+                </>
+              ) : null}
+            </Card>
+          </div>
+
+          <div className="mt-4 grid gap-3 lg:grid-cols-2">
+            {patientTrends.map((trend) => (
+              <TrendLine
+                key={`${trend.patientId}-${trend.parameterId}`}
+                title={`${trend.label} (${trend.unit})`}
+                reference={getReferenceText(trend.referenceRange, trend.unit)}
+                points={trend.points}
+              />
+            ))}
+          </div>
+        </>
+      )}
     </AuthedLayout>
   );
 }
 
 export function PatientOrdersExamsPage() {
-  const orders = mockOrders.filter((item) => item.patientId === "p-001");
+  const patient = useActivePatient();
+  const orders = mockOrders.filter((item) => item.patientId === patient.id);
 
   return (
     <AuthedLayout title="Ordenes y Examenes" items={patientNav}>
@@ -291,7 +428,9 @@ export function PatientOrdersExamsPage() {
 
 export function PatientClinicalDocumentsPage() {
   const addEvent = useAuditStore((s) => s.addEvent);
-  const docs = useResultsStore((s) => s.documents).filter((d) => d.patientId === "p-001");
+  const actor = useActor();
+  const patient = useActivePatient();
+  const docs = useResultsStore((s) => s.documents).filter((d) => d.patientId === patient.id);
   const markAsViewed = useResultsStore((s) => s.markAsViewed);
   const [filters, setFilters] = useState<ResultFilters>({ fromDate: "", toDate: "", category: "", site: "", status: "" });
   const [tab, setTab] = useState("asociados");
@@ -309,7 +448,7 @@ export function PatientClinicalDocumentsPage() {
     [docs, filters],
   );
 
-  const associated = mockClinicalDocuments.filter((item) => item.patientId === "p-001");
+  const associated = mockClinicalDocuments.filter((item) => item.patientId === patient.id);
 
   return (
     <AuthedLayout title="Documentos Clinicos" items={patientNav}>
@@ -350,7 +489,7 @@ export function PatientClinicalDocumentsPage() {
                   </div>
                   <Button
                     onClick={() => {
-                      addEvent("download_clicked", "demo-user", `Descarga documento ${doc.id}`);
+                      addEvent("download_clicked", actor, `Descarga documento ${doc.id}`);
                       markAsViewed(doc.id);
                       window.open(doc.fileUrl, "_blank");
                     }}
