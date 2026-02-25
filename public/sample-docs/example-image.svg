@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="600" viewBox="0 0 900 600" fill="none">
+  <rect width="900" height="600" fill="#F4F9FC"/>
+  <rect x="90" y="90" width="720" height="420" rx="24" fill="#FFFFFF" stroke="#B7D1E8" stroke-width="4"/>
+  <circle cx="230" cy="230" r="68" fill="#0E7CB5" opacity="0.18"/>
+  <rect x="330" y="180" width="360" height="24" rx="12" fill="#0E7CB5" opacity="0.2"/>
+  <rect x="330" y="226" width="280" height="20" rx="10" fill="#1485A8" opacity="0.2"/>
+  <rect x="330" y="266" width="320" height="20" rx="10" fill="#1485A8" opacity="0.2"/>
+  <text x="330" y="340" fill="#1D3C52" font-family="Arial, sans-serif" font-size="26">Documento de ejemplo - Perfilab</text>
+</svg>

@@ -1,0 +1,55 @@
+import { PatientProfile } from "@/types/medical";
+
+export const mockPatients: PatientProfile[] = [
+  {
+    id: "p-001",
+    fullName: "Alicia Navarro",
+    documentId: "DOC-FICT-1001",
+    birthDate: "1990-04-18",
+    phone: "+1 809-000-1001",
+    email: "alicia.navarro@demo-mail.test",
+    address: "Av. Salud 101, Ciudad Demo",
+    historyNumber: "HC-000154",
+    insurer: "Aseguradora Vital",
+    plan: "Integral Plus",
+    site: "Sede Central",
+    consents: [
+      { id: "c-1", name: "Tratamiento de datos clinicos", accepted: true, updatedAt: "2026-01-12" },
+      { id: "c-2", name: "Comunicacion de resultados", accepted: true, updatedAt: "2026-02-01" },
+    ],
+  },
+  {
+    id: "p-002",
+    fullName: "Marcos Varela",
+    documentId: "DOC-FICT-1002",
+    birthDate: "1987-11-03",
+    phone: "+1 809-000-1002",
+    email: "marcos.varela@demo-mail.test",
+    address: "Calle Diagnostico 24, Ciudad Demo",
+    historyNumber: "HC-000218",
+    insurer: "Cobertura Vida",
+    plan: "Familiar",
+    site: "Sede Norte",
+    consents: [
+      { id: "c-3", name: "Tratamiento de datos clinicos", accepted: true, updatedAt: "2026-01-08" },
+      { id: "c-4", name: "Notificacion por WhatsApp", accepted: false, updatedAt: "2026-01-10" },
+    ],
+  },
+  {
+    id: "p-003",
+    fullName: "Daniela Rios",
+    documentId: "DOC-FICT-1003",
+    birthDate: "1994-09-21",
+    phone: "+1 809-000-1003",
+    email: "daniela.rios@demo-mail.test",
+    address: "Pasaje Clinico 33, Ciudad Demo",
+    historyNumber: "HC-000307",
+    insurer: "Seguro Horizonte",
+    plan: "Premium",
+    site: "Sede Sur",
+    consents: [
+      { id: "c-5", name: "Tratamiento de datos clinicos", accepted: true, updatedAt: "2026-01-20" },
+      { id: "c-6", name: "Compartir resultados con medico", accepted: true, updatedAt: "2026-02-02" },
+    ],
+  },
+];

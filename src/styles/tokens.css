@@ -1,0 +1,19 @@
+:root {
+  --brand-bg: 255 255 255;
+  --brand-text: 31 41 55;
+  --brand-muted: 107 114 128;
+
+  --brand-primary: 245 133 45;
+  --brand-primary-2: 255 171 64;
+  --brand-accent: 255 214 102;
+  --brand-ink: 46 46 46;
+  --brand-ink-2: 25 25 25;
+  --brand-surface: 248 250 252;
+  --brand-border: 229 231 235;
+
+  --state-ok: 34 197 94;
+  --state-warn: 245 158 11;
+  --state-bad: 239 68 68;
+
+  --whatsapp: 37 211 102;
+}

@@ -1,0 +1,57 @@
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/inter/700.css";
+@import "@/styles/tokens.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  @apply border-brand-border;
+}
+
+body {
+  @apply bg-brand-bg text-brand-text antialiased;
+  font-family: "Inter", sans-serif;
+}
+
+a,
+button,
+input,
+select,
+textarea {
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.hero-pattern {
+  background-image:
+    linear-gradient(120deg, rgb(var(--brand-primary) / 0.95), rgb(var(--brand-primary-2) / 0.9)),
+    radial-gradient(circle at 20% 20%, rgb(var(--brand-accent) / 0.32), transparent 40%),
+    radial-gradient(circle at 80% 70%, rgb(var(--brand-accent) / 0.25), transparent 35%);
+  position: relative;
+}
+
+.hero-pattern::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 25% 50%, rgb(255 255 255 / 0.12) 0 2px, transparent 2px);
+  background-size: 22px 22px;
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
