@@ -12,38 +12,7 @@ import { mockPatients } from "@/mocks/patients";
 import { validateDemoToken } from "@/services/mock/tokenValidator";
 
 export function LandingPage() {
-  return (
-    <PublicLayout>
-      <section className="hero-pattern relative overflow-hidden">
-        <div className="relative mx-auto max-w-7xl px-4 py-24 text-white">
-          <h1 className="max-w-3xl text-5xl font-extrabold leading-tight md:text-6xl">Accede a tus Resultados Médicos</h1>
-          <p className="mt-4 max-w-xl text-lg text-white/95">Consulta tus estudios de forma segura y centralizada.</p>
-          <div className="mt-8">
-            <Link to="/access">
-              <Button variant="dark" className="text-base">Entrar a la demo</Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <section id="servicios" className="mx-auto max-w-7xl px-4 py-12">
-        <div className="grid gap-4 md:grid-cols-3">
-          <Card>
-            <h3 className="font-semibold">Resultados Médicos</h3>
-            <p className="mt-2 text-sm text-brand-muted">Consulta, validacion y trazabilidad de estudios clinicos.</p>
-          </Card>
-          <Card>
-            <h3 className="font-semibold">Historial clinico</h3>
-            <p className="mt-2 text-sm text-brand-muted">Ordenes, resultados, documentos y tendencias en un flujo simple.</p>
-          </Card>
-          <Card>
-            <h3 className="font-semibold">Compartir seguro</h3>
-            <p className="mt-2 text-sm text-brand-muted">Comparte resultados con enlace temporal para tu medico.</p>
-          </Card>
-        </div>
-      </section>
-    </PublicLayout>
-  );
+  return <Navigate to="/access" replace />;
 }
 
 export function AccessPage() {

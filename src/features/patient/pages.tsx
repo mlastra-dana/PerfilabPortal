@@ -1,8 +1,7 @@
 import { useMemo, useState } from "react";
-import { Link, Navigate, useSearchParams } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { ResultDocument } from "@/app/types";
 import { AuthedLayout } from "@/components/layout/AuthedLayout";
-import { Alert } from "@/components/ui/Alert";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -166,7 +165,6 @@ function ShareDocumentModal({
 }
 
 export function PatientMedicalResultsPage() {
-  const [searchParams] = useSearchParams();
   const addEvent = useAuditStore((s) => s.addEvent);
   const markAsViewed = useResultsStore((s) => s.markAsViewed);
   const getDocumentsForPatient = useResultsStore((s) => s.getDocumentsForPatient);
@@ -204,9 +202,6 @@ export function PatientMedicalResultsPage() {
 
   return (
     <AuthedLayout title="Resultados Médicos" items={patientNav}>
-      <Alert>Modo demostración</Alert>
-      {searchParams.get("token") ? <Alert>Acceso por enlace temporal (demo).</Alert> : null}
-
       <PatientInfoCard />
 
       <Card className="mt-4">

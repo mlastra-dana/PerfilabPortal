@@ -1,9 +1,7 @@
 import { ReactNode, useEffect } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { Alert } from "@/components/ui/Alert";
 import { RoleSwitch } from "@/components/layout/RoleSwitch";
 import { useAuditStore } from "@/features/audit/useAuditStore";
-import { useDemoRoleStore } from "@/features/demo/useDemoRoleStore";
 
 type Item = { to: string; label: string };
 
@@ -16,7 +14,6 @@ type Props = {
 export function AuthedLayout({ title, items, children }: Props) {
   const location = useLocation();
   const addEvent = useAuditStore((s) => s.addEvent);
-  const tokenBanner = useDemoRoleStore((s) => s.tokenAccessBanner);
 
   useEffect(() => {
     addEvent("page_view", "demo-user", `Navegacion a ${location.pathname}`);
@@ -50,7 +47,6 @@ export function AuthedLayout({ title, items, children }: Props) {
               <div className="min-w-0">
                 <div className="mb-1 flex items-center gap-3">
                   <img src="/brand/perfilab-logo.png" alt="Perfilab" className="h-8 w-auto max-w-[170px] object-contain" />
-                  <h1 className="text-base font-semibold sm:text-lg">Resultados Médicos</h1>
                 </div>
                 <p className="text-xs text-brand-muted">Resultados Médicos / {location.pathname}</p>
                 <p className="text-sm font-medium">{title}</p>
@@ -59,11 +55,7 @@ export function AuthedLayout({ title, items, children }: Props) {
             </div>
           </header>
 
-          <div className="space-y-3 p-4">
-            <Alert>Modo demostración</Alert>
-            {tokenBanner ? <Alert>{tokenBanner}</Alert> : null}
-            {children}
-          </div>
+          <div className="space-y-3 p-4">{children}</div>
         </div>
       </div>
     </div>
