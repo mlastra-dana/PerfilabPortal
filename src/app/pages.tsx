@@ -58,7 +58,7 @@ export function AccessPage() {
     const patient = mockPatients.find((item) => item.documentId.toUpperCase() === normalizedDoc);
 
     if (!patient) {
-      setError("No encontramos resultados para ese documento.");
+      setError("No hay resultados para esta cédula.");
       return;
     }
 
@@ -69,7 +69,7 @@ export function AccessPage() {
       documentId: patient.documentId,
       startedAt: new Date().toISOString(),
     });
-    navigate("/results/overview", { replace: true });
+    navigate("/results/labs", { replace: true });
   };
 
   return (

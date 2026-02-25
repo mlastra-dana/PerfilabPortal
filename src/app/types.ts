@@ -6,6 +6,7 @@ export type ResultStatus = "nuevo" | "visto";
 export type ResultDocument = {
   id: string;
   patientId: string;
+  patientDocument?: string;
   category: ResultCategory;
   studyName: string;
   studyDate: string;
@@ -14,6 +15,12 @@ export type ResultDocument = {
   fileName: string;
   fileUrl: string;
   fileType: "pdf" | "image";
+  title?: string;
+  date?: string;
+  type?: "pdf" | "image";
+  url?: string;
+  mimeType?: string;
+  thumbnailUrl?: string;
   createdAt: string;
   tags?: string[];
 };

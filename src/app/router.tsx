@@ -14,7 +14,7 @@ export const router = createBrowserRouter([
   { path: "/access", element: <AccessPage /> },
   { path: "/login", element: <LoginPage /> },
   { path: "/r/:token", element: <TokenAccessPage /> },
-  { path: "/results", element: <Navigate to="/results/overview" replace /> },
+  { path: "/results", element: <Navigate to="/results/labs" replace /> },
   { path: "/results/overview", element: <PatientOverviewPage /> },
   { path: "/results/labs", element: <PatientMedicalResultsPage /> },
   { path: "/results/orders", element: <PatientOrdersExamsPage /> },
