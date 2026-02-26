@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { ResultDocument } from "@/app/types";
+import { PdfThumbnail } from "@/components/documents/PdfThumbnail";
 import { AuthedLayout } from "@/components/layout/AuthedLayout";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -311,12 +312,7 @@ export function PatientMedicalResultsPage() {
                   {isImage ? (
                     <img src={doc.thumbnailUrl || url} alt={doc.title || doc.studyName} className="h-full w-full object-cover" />
                   ) : (
-                    <div className="flex h-full items-center justify-center bg-brand-ink/5">
-                      <div className="text-center">
-                        <p className="text-3xl">PDF</p>
-                        <p className="text-xs text-brand-muted">Vista previa</p>
-                      </div>
-                    </div>
+                    <PdfThumbnail src={url} title={doc.title || doc.studyName} />
                   )}
                 </button>
 
