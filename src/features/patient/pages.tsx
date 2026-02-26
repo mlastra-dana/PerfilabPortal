@@ -171,10 +171,16 @@ export function PatientMedicalResultsPage() {
   const actor = useActor();
   const patient = useActivePatient();
 
-  const [query, setQuery] = useState("");
-  const [typeFilter, setTypeFilter] = useState<DocumentTypeFilter>("all");
-  const [fromDate, setFromDate] = useState("");
-  const [toDate, setToDate] = useState("");
+  const [queryInput, setQueryInput] = useState("");
+  const [typeInput, setTypeInput] = useState<DocumentTypeFilter>("all");
+  const [fromDateInput, setFromDateInput] = useState("");
+  const [toDateInput, setToDateInput] = useState("");
+  const [appliedFilters, setAppliedFilters] = useState({
+    query: "",
+    type: "all" as DocumentTypeFilter,
+    from: "",
+    to: "",
+  });
   const [selectedDoc, setSelectedDoc] = useState<ResultDocument | null>(null);
   const [shareDoc, setShareDoc] = useState<ResultDocument | null>(null);
 
@@ -182,12 +188,34 @@ export function PatientMedicalResultsPage() {
     if (!patient) return [];
     return getDocumentsForPatient(patient.id, {
       documentId: patient.documentId,
-      query,
-      type: typeFilter,
-      from: fromDate,
-      to: toDate,
+      query: appliedFilters.query,
+      type: appliedFilters.type,
+      from: appliedFilters.from,
+      to: appliedFilters.to,
     });
-  }, [patient, getDocumentsForPatient, query, typeFilter, fromDate, toDate]);
+  }, [patient, getDocumentsForPatient, appliedFilters]);
+
+  const applyFilters = () => {
+    setAppliedFilters({
+      query: queryInput,
+      type: typeInput,
+      from: fromDateInput,
+      to: toDateInput,
+    });
+  };
+
+  const clearFilters = () => {
+    setQueryInput("");
+    setTypeInput("all");
+    setFromDateInput("");
+    setToDateInput("");
+    setAppliedFilters({
+      query: "",
+      type: "all",
+      from: "",
+      to: "",
+    });
+  };
 
   const openDocument = (doc: ResultDocument) => {
     setSelectedDoc(doc);
@@ -212,8 +240,8 @@ export function PatientMedicalResultsPage() {
             <Input
               id="search-doc"
               placeholder="Nombre del estudio o archivo"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
+              value={queryInput}
+              onChange={(event) => setQueryInput(event.target.value)}
             />
           </div>
 
@@ -221,8 +249,8 @@ export function PatientMedicalResultsPage() {
             <Label htmlFor="type-doc">Tipo</Label>
             <select
               id="type-doc"
-              value={typeFilter}
-              onChange={(event) => setTypeFilter(event.target.value as DocumentTypeFilter)}
+              value={typeInput}
+              onChange={(event) => setTypeInput(event.target.value as DocumentTypeFilter)}
               className="w-full rounded-xl border border-brand-border bg-white px-3 py-2 text-sm"
             >
               <option value="all">Todos</option>
@@ -234,13 +262,18 @@ export function PatientMedicalResultsPage() {
           <div className="grid grid-cols-2 gap-2">
             <div>
               <Label htmlFor="from-doc">Desde</Label>
-              <Input id="from-doc" type="date" value={fromDate} onChange={(event) => setFromDate(event.target.value)} />
+              <Input id="from-doc" type="date" value={fromDateInput} onChange={(event) => setFromDateInput(event.target.value)} />
             </div>
             <div>
               <Label htmlFor="to-doc">Hasta</Label>
-              <Input id="to-doc" type="date" value={toDate} onChange={(event) => setToDate(event.target.value)} />
+              <Input id="to-doc" type="date" value={toDateInput} onChange={(event) => setToDateInput(event.target.value)} />
             </div>
           </div>
+        </div>
+
+        <div className="mt-3 flex justify-end gap-2">
+          <Button variant="ghost" onClick={clearFilters}>Limpiar</Button>
+          <Button onClick={applyFilters}>Buscar</Button>
         </div>
 
         <p className="mt-3 text-sm text-brand-muted">Mostrando {docs.length} documentos</p>
@@ -259,16 +292,7 @@ export function PatientMedicalResultsPage() {
           <h2 className="text-lg font-semibold">No hay documentos para los filtros seleccionados</h2>
           <p className="mt-2 text-sm text-brand-muted">Limpia los filtros para ver todos los archivos de la cédula actual.</p>
           <div className="mt-4">
-            <Button
-              onClick={() => {
-                setQuery("");
-                setTypeFilter("all");
-                setFromDate("");
-                setToDate("");
-              }}
-            >
-              Limpiar filtros
-            </Button>
+            <Button onClick={clearFilters}>Limpiar filtros</Button>
           </div>
         </Card>
       ) : (
