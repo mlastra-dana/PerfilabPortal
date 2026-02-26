@@ -277,7 +277,11 @@ export function PatientMedicalResultsPage() {
           <Button onClick={applyFilters}>Buscar</Button>
         </div>
 
-        <p className="mt-3 text-sm text-brand-muted">Mostrando {docs.length} documentos</p>
+        <p className="mt-3 text-sm text-brand-muted">
+          {docs.length === 1
+            ? "Mostrado último 1 documento"
+            : `Mostrados últimos ${docs.length} documentos`}
+        </p>
       </Card>
 
       {!patient ? (
