@@ -21,6 +21,7 @@ type DemoRoleState = {
   setTokenAccessBanner: (value: string | null) => void;
   setPatientSession: (session: DemoPatientSession) => void;
   clearPatientSession: () => void;
+  resetCompanySession: () => void;
 };
 
 export const useDemoRoleStore = create<DemoRoleState>()(
@@ -56,6 +57,21 @@ export const useDemoRoleStore = create<DemoRoleState>()(
         }
         set({ patientSession: null, rolePickerOpen: false });
         useAuditStore.getState().addEvent("role_changed", "demo-user", "Sesion demo por documento finalizada");
+      },
+      resetCompanySession: () => {
+        if (typeof window !== "undefined") {
+          window.localStorage.removeItem("perfilab-demo-session");
+          window.localStorage.removeItem("demo_shared_docs");
+          window.localStorage.removeItem("selected-industry");
+          window.localStorage.removeItem("multi-industry-session");
+        }
+        set({
+          role: "patient",
+          patientSession: null,
+          tokenAccessBanner: null,
+          rolePickerOpen: false,
+        });
+        useAuditStore.getState().addEvent("role_changed", "demo-user", "Cambio de empresa / salida de sesion");
       },
     }),
     { name: "perfilab-demo-role" },

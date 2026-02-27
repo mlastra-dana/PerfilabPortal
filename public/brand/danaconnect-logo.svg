@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 180" role="img" aria-label="DANAconnect">
+  <defs>
+    <linearGradient id="danaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f79334"/>
+      <stop offset="100%" stop-color="#f04d23"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="180" fill="none"/>
+  <g transform="translate(16,16)">
+    <path d="M70 0c35 0 64 29 64 64v34c0 35-29 64-64 64S6 133 6 98 35 34 70 34c21 0 40 10 52 26V64C122 35 95 8 62 8H44V0h26z" fill="url(#danaGrad)"/>
+    <circle cx="70" cy="98" r="26" fill="#fff"/>
+  </g>
+  <g fill="#8b909a" font-family="Inter, Arial, sans-serif">
+    <text x="190" y="98" font-size="96" font-weight="500" letter-spacing="1">dana</text>
+    <text x="196" y="142" font-size="44" font-weight="400" letter-spacing="18">connect</text>
+  </g>
+</svg>

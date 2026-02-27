@@ -1,11 +1,13 @@
 import { Role } from "@/app/types";
 import { Button } from "@/components/ui/Button";
+import { useCompanySession } from "@/features/demo/useCompanySession";
 import { useDemoRoleStore } from "@/features/demo/useDemoRoleStore";
 
 const roles: Role[] = ["patient", "staff", "admin"];
 
 export function RoleSwitch({ compact = true }: { compact?: boolean }) {
-  const { role, patientSession, setRole, clearPatientSession, rolePickerOpen, openRolePicker, closeRolePicker } = useDemoRoleStore();
+  const { exitToSelector } = useCompanySession();
+  const { role, patientSession, setRole, rolePickerOpen, openRolePicker, closeRolePicker } = useDemoRoleStore();
   const label = role === "patient" && patientSession ? `Paciente: ${patientSession.documentId}` : `Rol: ${role}`;
 
   return (
@@ -25,14 +27,12 @@ export function RoleSwitch({ compact = true }: { compact?: boolean }) {
               {item}
             </button>
           ))}
-          {patientSession ? (
-            <button
-              className="mt-1 w-full rounded-xl px-3 py-2 text-left text-xs text-brand-muted hover:bg-brand-surface"
-              onClick={clearPatientSession}
-            >
-              Salir (limpiar sesion)
-            </button>
-          ) : null}
+          <button
+            className="mt-1 w-full rounded-xl px-3 py-2 text-left text-xs text-brand-muted hover:bg-brand-surface"
+            onClick={exitToSelector}
+          >
+            Salir
+          </button>
           <button className="mt-1 w-full rounded-xl px-3 py-2 text-xs text-brand-muted hover:bg-brand-surface" onClick={closeRolePicker}>
             Cerrar
           </button>

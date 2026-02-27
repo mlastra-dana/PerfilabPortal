@@ -1,7 +1,9 @@
 import { ReactNode, useEffect } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { RoleSwitch } from "@/components/layout/RoleSwitch";
+import { Button } from "@/components/ui/Button";
 import { useAuditStore } from "@/features/audit/useAuditStore";
+import { useCompanySession } from "@/features/demo/useCompanySession";
 
 type Item = { to: string; label: string };
 
@@ -14,6 +16,7 @@ type Props = {
 export function AuthedLayout({ title, items, children }: Props) {
   const location = useLocation();
   const addEvent = useAuditStore((s) => s.addEvent);
+  const { exitToSelector } = useCompanySession();
 
   useEffect(() => {
     addEvent("page_view", "demo-user", `Navegacion a ${location.pathname}`);
@@ -22,7 +25,7 @@ export function AuthedLayout({ title, items, children }: Props) {
   return (
     <div className="min-h-screen bg-brand-surface">
       <div className="md:flex">
-        <aside className="w-full border-r border-brand-ink/20 bg-brand-ink p-4 text-white md:min-h-screen md:w-64">
+        <aside className="w-full border-r border-brand-ink/20 bg-brand-ink p-4 text-white md:flex md:min-h-screen md:w-64 md:flex-col">
           <Link to="/" className="mb-4 flex items-center gap-2">
             <img src="/brand/perfilab-logo.png" alt="Perfilab" className="h-8 w-auto max-w-[140px] object-contain" />
           </Link>
@@ -51,7 +54,12 @@ export function AuthedLayout({ title, items, children }: Props) {
                 <p className="text-xs text-brand-muted">Resultados Médicos / {location.pathname}</p>
                 <p className="text-sm font-medium">{title}</p>
               </div>
-              <RoleSwitch />
+              <div className="flex items-center gap-2">
+                <RoleSwitch />
+                <Button variant="ghost" className="text-xs" onClick={exitToSelector}>
+                  Salir
+                </Button>
+              </div>
             </div>
           </header>
 

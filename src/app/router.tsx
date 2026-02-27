@@ -2,6 +2,11 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import { AccessPage, LandingPage, LoginPage, NotFoundPage, TokenAccessPage } from "@/app/pages";
 import { AdminAuditPage, AdminPatientsPage, AdminUploadsPage } from "@/features/admin/pages";
 import {
+  IndustryAccessPage,
+  IndustryDocumentsPage,
+  MultiIndustryLandingPage,
+} from "@/features/multi/pages";
+import {
   PatientClinicalDocumentsPage,
   PatientMedicalResultsPage,
   PatientOrdersExamsPage,
@@ -10,10 +15,13 @@ import {
 } from "@/features/patient/pages";
 
 export const router = createBrowserRouter([
-  { path: "/", element: <Navigate to="/access" replace /> },
+  { path: "/", element: <MultiIndustryLandingPage /> },
+  { path: "/multi", element: <MultiIndustryLandingPage /> },
   { path: "/landing", element: <LandingPage /> },
   { path: "/access", element: <AccessPage /> },
+  { path: "/access/:industry", element: <IndustryAccessPage /> },
   { path: "/login", element: <LoginPage /> },
+  { path: "/documents/:industry", element: <IndustryDocumentsPage /> },
   { path: "/r/:token", element: <TokenAccessPage /> },
   { path: "/results", element: <Navigate to="/results/labs" replace /> },
   { path: "/results/overview", element: <PatientOverviewPage /> },

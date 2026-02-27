@@ -14,7 +14,6 @@ import { mockPatients } from "@/mocks/patients";
 
 const patientNav = [{ to: "/results/labs", label: "Mis Resultados" }];
 
-type DocumentTypeFilter = "all" | "pdf" | "image";
 type ServiceFilter = "all" | "Laboratorio" | "Imagenología" | "Histopatología" | string;
 
 function useActivePatient() {
@@ -52,6 +51,10 @@ function resolveDownloadName(doc: ResultDocument) {
   const cleanPath = url.split("?")[0];
   const fromPath = cleanPath.split("/").pop();
   return fromPath ? decodeURIComponent(fromPath) : `${doc.id}.${resolveDocumentType(doc) === "pdf" ? "pdf" : "jpg"}`;
+}
+
+function resolveStatusLabel(status: ResultDocument["status"]) {
+  return status === "nuevo" ? "No visto" : "Visto";
 }
 
 function PatientInfoCard() {
@@ -188,13 +191,11 @@ export function PatientMedicalResultsPage() {
   const patient = useActivePatient();
 
   const [queryInput, setQueryInput] = useState("");
-  const [typeInput, setTypeInput] = useState<DocumentTypeFilter>("all");
   const [serviceInput, setServiceInput] = useState<ServiceFilter>("all");
   const [fromDateInput, setFromDateInput] = useState("");
   const [toDateInput, setToDateInput] = useState("");
   const [appliedFilters, setAppliedFilters] = useState({
     query: "",
-    type: "all" as DocumentTypeFilter,
     service: "all" as ServiceFilter,
     from: "",
     to: "",
@@ -207,7 +208,6 @@ export function PatientMedicalResultsPage() {
     return getDocumentsForPatient(patient.id, {
       documentId: patient.documentId,
       query: appliedFilters.query,
-      type: appliedFilters.type,
       service: appliedFilters.service,
       from: appliedFilters.from,
       to: appliedFilters.to,
@@ -238,7 +238,6 @@ export function PatientMedicalResultsPage() {
   const applyFilters = () => {
     setAppliedFilters({
       query: queryInput,
-      type: typeInput,
       service: serviceInput,
       from: fromDateInput,
       to: toDateInput,
@@ -247,13 +246,11 @@ export function PatientMedicalResultsPage() {
 
   const clearFilters = () => {
     setQueryInput("");
-    setTypeInput("all");
     setServiceInput("all");
     setFromDateInput("");
     setToDateInput("");
     setAppliedFilters({
       query: "",
-      type: "all",
       service: "all",
       from: "",
       to: "",
@@ -340,16 +337,18 @@ export function PatientMedicalResultsPage() {
           </div>
 
           <div>
-            <Label htmlFor="type-doc">Tipo</Label>
+            <Label htmlFor="service-doc">Servicio / Tipo de examen</Label>
             <select
-              id="type-doc"
-              value={typeInput}
-              onChange={(event) => setTypeInput(event.target.value as DocumentTypeFilter)}
+              id="service-doc"
+              value={serviceInput}
+              onChange={(event) => setServiceInput(event.target.value as ServiceFilter)}
               className="w-full rounded-xl border border-brand-border bg-white px-3 py-2 text-sm"
             >
-              <option value="all">Todos</option>
-              <option value="pdf">PDF</option>
-              <option value="image">Imagen</option>
+              {serviceOptions.map((option) => (
+                <option key={option} value={option}>
+                  {option === "all" ? "Todos" : option}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -420,7 +419,7 @@ export function PatientMedicalResultsPage() {
                       <td className="px-4 py-3">{typeLabel}</td>
                       <td className="px-4 py-3">{dateLabel}</td>
                       <td className="px-4 py-3">
-                        <Badge tone={doc.status === "nuevo" ? "warn" : "neutral"}>{doc.status}</Badge>
+                        <Badge tone={doc.status === "nuevo" ? "warn" : "neutral"}>{resolveStatusLabel(doc.status)}</Badge>
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex flex-wrap gap-2">
@@ -453,7 +452,7 @@ export function PatientMedicalResultsPage() {
                       <p className="font-semibold">{doc.title || doc.studyName}</p>
                       <p className="text-xs text-brand-muted">{typeLabel} · {dateLabel}</p>
                     </div>
-                    <Badge tone={doc.status === "nuevo" ? "warn" : "neutral"}>{doc.status}</Badge>
+                    <Badge tone={doc.status === "nuevo" ? "warn" : "neutral"}>{resolveStatusLabel(doc.status)}</Badge>
                   </div>
                   <div className="mt-3 flex flex-wrap gap-2">
                     <Button variant="ghost" onClick={() => openDocument(doc)}>
