@@ -39,6 +39,14 @@ function resolveDocumentType(doc: ResultDocument): "pdf" | "image" {
   return doc.type || doc.fileType;
 }
 
+function resolveDownloadName(doc: ResultDocument) {
+  if (doc.fileName) return doc.fileName;
+  const url = resolveDocumentUrl(doc);
+  const cleanPath = url.split("?")[0];
+  const fromPath = cleanPath.split("/").pop();
+  return fromPath ? decodeURIComponent(fromPath) : `${doc.id}.${resolveDocumentType(doc) === "pdf" ? "pdf" : "jpg"}`;
+}
+
 function PatientInfoCard() {
   const patient = useActivePatient();
 
@@ -224,9 +232,36 @@ export function PatientMedicalResultsPage() {
     addEvent("document_view", actor, `Visualizacion de documento ${doc.id}`);
   };
 
-  const downloadDocument = (doc: ResultDocument) => {
+  const downloadDocument = async (doc: ResultDocument) => {
     addEvent("download_clicked", actor, `Descarga documento ${doc.id}`);
-    window.open(resolveDocumentUrl(doc), "_blank", "noopener,noreferrer");
+    const url = resolveDocumentUrl(doc);
+    const fileName = resolveDownloadName(doc);
+
+    try {
+      const response = await fetch(url, { cache: "no-store" });
+      if (!response.ok) throw new Error("download_failed");
+
+      const blob = await response.blob();
+      const objectUrl = window.URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = objectUrl;
+      anchor.download = fileName;
+      anchor.rel = "noopener noreferrer";
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      window.URL.revokeObjectURL(objectUrl);
+    } catch {
+      // Fallback para navegadores moviles que bloquean download por blob.
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = fileName;
+      anchor.rel = "noopener noreferrer";
+      anchor.target = "_blank";
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+    }
   };
 
   return (
