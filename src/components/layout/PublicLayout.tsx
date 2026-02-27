@@ -1,8 +1,10 @@
 import { ReactNode } from "react";
-import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/Button";
+import { useCompanySession } from "@/features/demo/useCompanySession";
 
 export function PublicLayout({ children }: { children: ReactNode }) {
+  const { exitToSelector } = useCompanySession();
+
   return (
     <div className="min-h-screen bg-brand-bg">
       <header className="border-b border-brand-border bg-white">
@@ -20,14 +22,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
             <a href="#blog">Blog</a>
             <a href="#contacto">Contacto</a>
           </nav>
-          <div className="flex items-center gap-2">
-            <span className="hidden rounded-pill bg-brand-primary2 px-4 py-2 text-xs font-semibold text-brand-ink2 sm:inline-flex">
-              0212.819.47.50
-            </span>
-            <Link to="/access">
-              <Button>Resultados Médicos</Button>
-            </Link>
-          </div>
+          <Button variant="ghost" onClick={exitToSelector}>Salir</Button>
         </div>
       </header>
 
