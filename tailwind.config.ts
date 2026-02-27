@@ -5,6 +5,9 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        dana: {
+          primary: "#f68b2c",
+        },
         brand: {
           bg: "rgb(var(--brand-bg) / <alpha-value>)",
           text: "rgb(var(--brand-text) / <alpha-value>)",

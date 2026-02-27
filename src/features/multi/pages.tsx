@@ -22,11 +22,11 @@ const industries: Array<{ key: Industry; label: string }> = [
   { key: "aseguradora", label: "Aseguradora" },
 ];
 
-const danaButtonPrimary = "rounded-md bg-[#f04d23] text-white shadow-none hover:bg-[#db3f1a]";
-const danaButtonSecondary = "rounded-md border border-[#cfd3d8] bg-white text-[#4b5563] shadow-none hover:bg-[#f8fafc]";
-const danaButtonDark = "rounded-md bg-[#3f444b] text-white shadow-none hover:bg-[#34383e]";
-const danaField = "w-full rounded-md border border-[#cfd3d8] bg-white px-3 py-2 text-sm text-[#2d3138] outline-none focus:border-[#f04d23] focus:ring-2 focus:ring-[#f04d23]/20";
-const danaSelect = "w-full rounded-md border border-[#cfd3d8] bg-white px-3 py-2 text-sm text-[#2d3138] outline-none focus:border-[#f04d23] focus:ring-2 focus:ring-[#f04d23]/20";
+const danaButtonPrimary = "rounded-pill border border-dana-primary bg-dana-primary text-white shadow-none hover:opacity-90";
+const danaButtonSecondary = "rounded-pill border border-dana-primary bg-dana-primary text-white shadow-none hover:opacity-90";
+const danaButtonDark = "rounded-pill border border-dana-primary bg-dana-primary text-white shadow-none hover:opacity-90";
+const danaField = "w-full rounded-md border border-[#cfd3d8] bg-white px-3 py-2 text-sm text-[#2d3138] outline-none focus:border-dana-primary focus:ring-2 focus:ring-dana-primary/20";
+const danaSelect = "w-full rounded-md border border-[#cfd3d8] bg-white px-3 py-2 text-sm text-[#2d3138] outline-none focus:border-dana-primary focus:ring-2 focus:ring-dana-primary/20";
 const danaPanel = "rounded-xl border border-[#d9dde2] bg-white shadow-none";
 
 const industrySamples: Record<Exclude<Industry, "laboratorio">, string[]> = {
@@ -129,7 +129,7 @@ function DanaLayout({ children }: { children: ReactNode }) {
       <header className="border-b border-[#e5e7eb] bg-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
           <Link to="/" aria-label="Volver al inicio multiempresa">
-            <img src="/brand/danaconnect-logo.svg" alt="DANAconnect" className="h-10 w-auto object-contain" />
+            <img src="/brand/logo-danaconnect-horizontal.png" alt="DANAconnect" className="h-10 w-auto object-contain" />
           </Link>
           <div className="hidden items-center gap-6 text-sm text-[#5b6068] md:flex">
             <span>Platform</span>
@@ -461,7 +461,7 @@ export function MultiIndustryLandingPage() {
 
   return (
     <DanaLayout>
-      <section className="bg-[#f04d23]">
+      <section className="bg-dana-primary">
         <div className="mx-auto max-w-7xl px-4 py-20 text-white">
           <p className="text-sm font-semibold uppercase tracking-[0.18em] text-white/90">DANAconnect</p>
           <h1 className="mt-3 text-4xl font-extrabold leading-tight md:text-6xl">Multiempresas de visual/descarga documentos</h1>
@@ -480,8 +480,8 @@ export function MultiIndustryLandingPage() {
               onClick={() => setIndustry(item.key)}
               className={`rounded-xl border p-5 text-left transition ${
                 industry === item.key
-                  ? "border-[#f04d23] bg-[#fff3ef]"
-                  : "border-[#d9dde2] bg-white hover:border-[#f04d23]/70"
+                  ? "border-dana-primary bg-[#fff3ef]"
+                  : "border-[#d9dde2] bg-white hover:border-dana-primary/70"
               }`}
             >
               <p className="text-sm uppercase tracking-wide text-[#6b7280]">Industria</p>
