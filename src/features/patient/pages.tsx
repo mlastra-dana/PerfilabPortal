@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { ResultDocument } from "@/app/types";
-import { PdfThumbnail } from "@/components/documents/PdfThumbnail";
 import { AuthedLayout } from "@/components/layout/AuthedLayout";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -336,40 +335,83 @@ export function PatientMedicalResultsPage() {
           </div>
         </Card>
       ) : (
-        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {docs.map((doc) => {
-            const url = resolveDocumentUrl(doc);
-            const docType = resolveDocumentType(doc);
-            const isImage = docType === "image";
+        <div className="mt-4 overflow-hidden rounded-2xl border border-brand-border bg-white">
+          <div className="hidden overflow-auto md:block">
+            <table className="w-full min-w-[900px] text-left text-sm">
+              <thead className="bg-brand-surface text-brand-muted">
+                <tr>
+                  <th className="px-4 py-3 font-semibold">Nombre del estudio</th>
+                  <th className="px-4 py-3 font-semibold">Tipo/Servicio</th>
+                  <th className="px-4 py-3 font-semibold">Fecha</th>
+                  <th className="px-4 py-3 font-semibold">Estado</th>
+                  <th className="px-4 py-3 font-semibold">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {docs.map((doc) => {
+                  const docType = resolveDocumentType(doc);
+                  const typeLabel = doc.category || docType.toUpperCase();
+                  const dateLabel = (doc.createdAt || doc.date || doc.studyDate || "").replace("T", " ").slice(0, 16);
 
-            return (
-              <Card key={doc.id} className="p-0">
-                <button
-                  className="block h-44 w-full overflow-hidden rounded-t-2xl bg-brand-surface"
-                  onClick={() => openDocument(doc)}
-                >
-                  {isImage ? (
-                    <img src={doc.thumbnailUrl || url} alt={doc.title || doc.studyName} className="h-full w-full object-cover" />
-                  ) : (
-                    <PdfThumbnail src={url} title={doc.title || doc.studyName} />
-                  )}
-                </button>
+                  return (
+                    <tr key={doc.id} className="border-t border-brand-border align-middle">
+                      <td className="px-4 py-3">
+                        <p className="font-semibold">{doc.title || doc.studyName}</p>
+                        <p className="text-xs text-brand-muted">{doc.fileName}</p>
+                      </td>
+                      <td className="px-4 py-3">{typeLabel}</td>
+                      <td className="px-4 py-3">{dateLabel}</td>
+                      <td className="px-4 py-3">
+                        <Badge tone={doc.status === "nuevo" ? "warn" : "neutral"}>{doc.status}</Badge>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex flex-wrap gap-2">
+                          <Button variant="ghost" onClick={() => openDocument(doc)}>
+                            <span className="mr-1 inline-flex" aria-hidden="true">
+                              <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current"><path d="M12 5c-5.5 0-9.6 4.6-10.8 6.3a1.2 1.2 0 0 0 0 1.4C2.4 14.4 6.5 19 12 19s9.6-4.6 10.8-6.3a1.2 1.2 0 0 0 0-1.4C21.6 9.6 17.5 5 12 5Zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z" /></svg>
+                            </span>
+                            Ver
+                          </Button>
+                          <Button onClick={() => downloadDocument(doc)}>Descargar</Button>
+                          <Button variant="dark" onClick={() => setShareDoc(doc)}>Compartir</Button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
 
-                <div className="space-y-2 p-4">
+          <div className="space-y-3 p-3 md:hidden">
+            {docs.map((doc) => {
+              const docType = resolveDocumentType(doc);
+              const typeLabel = doc.category || docType.toUpperCase();
+              const dateLabel = (doc.createdAt || doc.date || doc.studyDate || "").replace("T", " ").slice(0, 16);
+
+              return (
+                <div key={doc.id} className="rounded-xl border border-brand-border p-3">
                   <div className="flex items-start justify-between gap-2">
-                    <p className="line-clamp-2 text-sm font-semibold">{doc.title || doc.studyName}</p>
+                    <div>
+                      <p className="font-semibold">{doc.title || doc.studyName}</p>
+                      <p className="text-xs text-brand-muted">{typeLabel} · {dateLabel}</p>
+                    </div>
                     <Badge tone={doc.status === "nuevo" ? "warn" : "neutral"}>{doc.status}</Badge>
                   </div>
-                  <p className="text-xs text-brand-muted">{(doc.date || doc.studyDate || "").slice(0, 10)} · {docType.toUpperCase()}</p>
-                  <div className="flex gap-2">
-                    <Button variant="ghost" className="flex-1" onClick={() => openDocument(doc)}>Ver</Button>
-                    <Button className="flex-1" onClick={() => downloadDocument(doc)}>Descargar</Button>
-                    <Button variant="dark" className="flex-1" onClick={() => setShareDoc(doc)}>Compartir</Button>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Button variant="ghost" onClick={() => openDocument(doc)}>
+                      <span className="mr-1 inline-flex" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current"><path d="M12 5c-5.5 0-9.6 4.6-10.8 6.3a1.2 1.2 0 0 0 0 1.4C2.4 14.4 6.5 19 12 19s9.6-4.6 10.8-6.3a1.2 1.2 0 0 0 0-1.4C21.6 9.6 17.5 5 12 5Zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z" /></svg>
+                      </span>
+                      Ver
+                    </Button>
+                    <Button onClick={() => downloadDocument(doc)}>Descargar</Button>
+                    <Button variant="dark" onClick={() => setShareDoc(doc)}>Compartir</Button>
                   </div>
                 </div>
-              </Card>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       )}
 
