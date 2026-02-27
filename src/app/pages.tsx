@@ -23,7 +23,7 @@ export function LandingPage() {
           <div className="mt-8">
             <Link to="/access">
               <Button variant="dark" className="text-base">
-                Entrar a la demo
+                Entrar
               </Button>
             </Link>
           </div>
@@ -104,7 +104,7 @@ export function TokenAccessPage() {
     const result = validateDemoToken(token);
     if (!result.valid) return;
 
-    setBanner(`Acceso por enlace temporal (demo). Expira: ${result.expiresAt}`);
+    setBanner(`Acceso por enlace temporal. Expira: ${result.expiresAt}`);
     addEvent("page_view", "demo-user", `Ingreso por token ${token}`);
     navigate(`/results/labs?token=${encodeURIComponent(token)}`, { replace: true });
   }, [token, setBanner, navigate, addEvent]);

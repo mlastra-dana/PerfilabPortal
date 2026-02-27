@@ -15,6 +15,7 @@ import { mockPatients } from "@/mocks/patients";
 const patientNav = [{ to: "/results/labs", label: "Mis Resultados" }];
 
 type DocumentTypeFilter = "all" | "pdf" | "image";
+type ServiceFilter = "all" | "Laboratorio" | "Imagenología" | "Histopatología" | string;
 
 function useActivePatient() {
   const patientSession = useDemoRoleStore((s) => s.patientSession);
@@ -36,6 +37,13 @@ function resolveDocumentUrl(doc: ResultDocument) {
 
 function resolveDocumentType(doc: ResultDocument): "pdf" | "image" {
   return doc.type || doc.fileType;
+}
+
+function resolveDocumentService(doc: ResultDocument) {
+  if (doc.service) return doc.service;
+  if (doc.category === "Laboratorio") return "Laboratorio";
+  if (doc.category === "Rayos X" || doc.category === "Mamografias") return "Imagenología";
+  return doc.category;
 }
 
 function resolveDownloadName(doc: ResultDocument) {
@@ -181,11 +189,13 @@ export function PatientMedicalResultsPage() {
 
   const [queryInput, setQueryInput] = useState("");
   const [typeInput, setTypeInput] = useState<DocumentTypeFilter>("all");
+  const [serviceInput, setServiceInput] = useState<ServiceFilter>("all");
   const [fromDateInput, setFromDateInput] = useState("");
   const [toDateInput, setToDateInput] = useState("");
   const [appliedFilters, setAppliedFilters] = useState({
     query: "",
     type: "all" as DocumentTypeFilter,
+    service: "all" as ServiceFilter,
     from: "",
     to: "",
   });
@@ -198,15 +208,38 @@ export function PatientMedicalResultsPage() {
       documentId: patient.documentId,
       query: appliedFilters.query,
       type: appliedFilters.type,
+      service: appliedFilters.service,
       from: appliedFilters.from,
       to: appliedFilters.to,
     });
   }, [patient, getDocumentsForPatient, appliedFilters]);
 
+  const patientDocs = useMemo(() => {
+    if (!patient) return [];
+    return getDocumentsForPatient(patient.id, { documentId: patient.documentId });
+  }, [patient, getDocumentsForPatient]);
+
+  const serviceOptions = useMemo(() => {
+    const base = ["Laboratorio", "Imagenología", "Histopatología"];
+    const extras = Array.from(new Set(patientDocs.map((doc) => resolveDocumentService(doc))))
+      .filter((item) => !base.includes(item))
+      .sort();
+    return ["all", ...base, ...extras];
+  }, [patientDocs]);
+
+  const onSelectService = (option: ServiceFilter) => {
+    setServiceInput(option);
+    setAppliedFilters((prev) => ({
+      ...prev,
+      service: option,
+    }));
+  };
+
   const applyFilters = () => {
     setAppliedFilters({
       query: queryInput,
       type: typeInput,
+      service: serviceInput,
       from: fromDateInput,
       to: toDateInput,
     });
@@ -215,11 +248,13 @@ export function PatientMedicalResultsPage() {
   const clearFilters = () => {
     setQueryInput("");
     setTypeInput("all");
+    setServiceInput("all");
     setFromDateInput("");
     setToDateInput("");
     setAppliedFilters({
       query: "",
       type: "all",
+      service: "all",
       from: "",
       to: "",
     });
@@ -229,6 +264,10 @@ export function PatientMedicalResultsPage() {
     setSelectedDoc(doc);
     markAsViewed(doc.id);
     addEvent("document_view", actor, `Visualizacion de documento ${doc.id}`);
+  };
+
+  const openShareModal = (doc: ResultDocument) => {
+    setShareDoc(doc);
   };
 
   const downloadDocument = async (doc: ResultDocument) => {
@@ -269,7 +308,27 @@ export function PatientMedicalResultsPage() {
 
       <Card className="mt-4">
         <h2 className="mb-3 text-base font-semibold">Mis Resultados</h2>
-        <div className="grid gap-3 md:grid-cols-4">
+        <div className="mb-4 overflow-auto rounded-xl border border-brand-border bg-brand-surface/70 p-2">
+          <div className="flex min-w-max gap-2">
+            {serviceOptions.map((option) => {
+              const active = serviceInput === option;
+              return (
+                <button
+                  key={option}
+                  type="button"
+                  onClick={() => onSelectService(option as ServiceFilter)}
+                  className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                    active ? "bg-brand-primary text-white" : "bg-white text-brand-text hover:bg-brand-primary/10"
+                  }`}
+                >
+                  {option === "all" ? "Todos" : option}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="grid gap-3 md:grid-cols-5">
           <div className="md:col-span-2">
             <Label htmlFor="search-doc">Buscar documento</Label>
             <Input
@@ -294,7 +353,7 @@ export function PatientMedicalResultsPage() {
             </select>
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-2 md:col-span-2">
             <div>
               <Label htmlFor="from-doc">Desde</Label>
               <Input id="from-doc" type="date" value={fromDateInput} onChange={(event) => setFromDateInput(event.target.value)} />
@@ -349,8 +408,7 @@ export function PatientMedicalResultsPage() {
               </thead>
               <tbody>
                 {docs.map((doc) => {
-                  const docType = resolveDocumentType(doc);
-                  const typeLabel = doc.category || docType.toUpperCase();
+                  const typeLabel = resolveDocumentService(doc);
                   const dateLabel = (doc.createdAt || doc.date || doc.studyDate || "").replace("T", " ").slice(0, 16);
 
                   return (
@@ -373,7 +431,7 @@ export function PatientMedicalResultsPage() {
                             Ver
                           </Button>
                           <Button onClick={() => downloadDocument(doc)}>Descargar</Button>
-                          <Button variant="dark" onClick={() => setShareDoc(doc)}>Compartir</Button>
+                          <Button variant="dark" onClick={() => openShareModal(doc)}>Compartir</Button>
                         </div>
                       </td>
                     </tr>
@@ -385,8 +443,7 @@ export function PatientMedicalResultsPage() {
 
           <div className="space-y-3 p-3 md:hidden">
             {docs.map((doc) => {
-              const docType = resolveDocumentType(doc);
-              const typeLabel = doc.category || docType.toUpperCase();
+              const typeLabel = resolveDocumentService(doc);
               const dateLabel = (doc.createdAt || doc.date || doc.studyDate || "").replace("T", " ").slice(0, 16);
 
               return (
@@ -406,7 +463,7 @@ export function PatientMedicalResultsPage() {
                       Ver
                     </Button>
                     <Button onClick={() => downloadDocument(doc)}>Descargar</Button>
-                    <Button variant="dark" onClick={() => setShareDoc(doc)}>Compartir</Button>
+                    <Button variant="dark" onClick={() => openShareModal(doc)}>Compartir</Button>
                   </div>
                 </div>
               );

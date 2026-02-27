@@ -6,7 +6,7 @@ const roles: Role[] = ["patient", "staff", "admin"];
 
 export function RoleSwitch({ compact = true }: { compact?: boolean }) {
   const { role, patientSession, setRole, clearPatientSession, rolePickerOpen, openRolePicker, closeRolePicker } = useDemoRoleStore();
-  const label = role === "patient" && patientSession ? `Paciente: ${patientSession.documentId}` : `Rol demo: ${role}`;
+  const label = role === "patient" && patientSession ? `Paciente: ${patientSession.documentId}` : `Rol: ${role}`;
 
   return (
     <div className="relative">

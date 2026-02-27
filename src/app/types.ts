@@ -8,6 +8,7 @@ export type ResultDocument = {
   patientId: string;
   patientDocument?: string;
   category: ResultCategory;
+  service?: string;
   studyName: string;
   studyDate: string;
   site: string;

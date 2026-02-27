@@ -10,7 +10,8 @@ import {
 } from "@/features/patient/pages";
 
 export const router = createBrowserRouter([
-  { path: "/", element: <LandingPage /> },
+  { path: "/", element: <Navigate to="/access" replace /> },
+  { path: "/landing", element: <LandingPage /> },
   { path: "/access", element: <AccessPage /> },
   { path: "/login", element: <LoginPage /> },
   { path: "/r/:token", element: <TokenAccessPage /> },

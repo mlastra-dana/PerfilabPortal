@@ -6,6 +6,7 @@ export type DocumentFilters = {
   documentId?: string;
   query?: string;
   type?: "all" | "pdf" | "image";
+  service?: string;
   from?: string;
   to?: string;
 };
@@ -29,9 +30,17 @@ export const useResultsStore = create<ResultsState>((set, get) => ({
   getDocumentsForPatient: (patientId, filters) => {
     const query = (filters?.query || "").trim().toLowerCase();
     const type = filters?.type || "all";
+    const service = filters?.service || "all";
     const from = filters?.from || "";
     const to = filters?.to || "";
     const documentId = (filters?.documentId || "").trim().toUpperCase();
+
+    const resolveService = (category: ResultDocument["category"], explicit?: string) => {
+      if (explicit) return explicit;
+      if (category === "Laboratorio") return "Laboratorio";
+      if (category === "Rayos X" || category === "Mamografias") return "Imagenología";
+      return category;
+    };
 
     return get()
       .documents
@@ -41,9 +50,11 @@ export const useResultsStore = create<ResultsState>((set, get) => ({
         const title = (doc.title || doc.studyName || "").toLowerCase();
         const fileName = (doc.fileName || "").toLowerCase();
         const docType = doc.type || doc.fileType;
+        const docService = resolveService(doc.category, doc.service);
 
         if (query && !title.includes(query) && !fileName.includes(query)) return false;
         if (type !== "all" && docType !== type) return false;
+        if (service !== "all" && docService !== service) return false;
         if (from && date < from) return false;
         if (to && date > to) return false;
         return true;
