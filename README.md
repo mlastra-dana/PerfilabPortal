@@ -1,18 +1,23 @@
-# Resultados Médicos
+# DANAconnect Multiempresa - Portal de Documentos
 
-Plataforma moderna para consulta, validacion y trazabilidad de estudios clinicos de un laboratorio independiente.
+Plataforma demo multiempresa para visualizacion, descarga y comparticion de documentos
+por industria (Laboratorio/Perfilab, Universidad, RRHH, Aseguradora).
 
-## Enfoque del producto
+## Enfoque del producto (demo multiindustria)
 
-Este repositorio esta enfocado exclusivamente en **Resultados Médicos**.
+Este repositorio implementa un selector multiempresa y flujos demo por industria.
+El flujo de Laboratorio reutiliza el portal Perfilab existente sin modificar datos.
 
-Incluye solo:
+Incluye:
 
-- Informacion general del paciente
-- Historial de ordenes y examenes (timeline)
-- Resultados medicos con rangos, alertas fuera de rango, PDF y tendencias
-- Documentacion clinica asociada
-- Compartir resultados por enlace temporal mock (`/r/:token`)
+- Landing multiempresa con selector de industria
+- Acceso por identificador (cedula / poliza segun industria)
+- Administrador de documentos (lista, preview, descargar, compartir)
+- Laboratorio (Perfilab): resultados medicos, ordenes, examenes y documentos clinicos
+- Universidad: notas, constancias, pagos (mock)
+- RRHH: recibos, contratos, constancias (mock)
+- Aseguradora: polizas, cartas aval, reembolsos, anexos (mock)
+- Compartir por enlace temporal mock (`/r/:token`)
 - Panel demo para admin/staff: pacientes, carga de resultados, auditoria
 
 No incluye:
@@ -21,7 +26,7 @@ No incluye:
 - Facturacion/pagos
 - Seguridad avanzada visible (2FA/politicas avanzadas)
 
-## Modo demostración (sin autenticacion real)
+## Modo demostracion (sin autenticacion real)
 
 - No hay login obligatorio.
 - `RoleSwitch` visible en layout autenticado.
@@ -35,14 +40,21 @@ No incluye:
 
 ### Publicas
 
-- `/` landing
+- `/` landing multiempresa
+- `/multi` landing multiempresa (alias)
 - `/r/:token` enlace temporal mock
 - `/login` redireccion a `/results/overview` (compatibilidad)
 
-### Paciente
+### Acceso multiempresa
+
+- `/access/:industry` acceso por industria (universidad/rrhh/aseguradora)
+- `/documents/:industry` document manager por industria
+- Laboratorio: `/access` y rutas Perfilab existentes
+
+### Perfilab (Laboratorio)
 
 - `/results/overview` Resumen
-- `/results/labs` Mis Resultados Médicos
+- `/results/labs` Mis Resultados Medicos
 - `/results/orders` Ordenes y Examenes
 - `/results/clinical-docs` Documentos Clinicos
 - `/results/share` Compartir Resultados
@@ -73,12 +85,14 @@ npm run build
 
 ## Estructura clave
 
-- `src/features/patient/pages.tsx`
+- `src/features/multi/pages.tsx` (landing + accesos + documentos multiempresa)
+- `src/features/patient/pages.tsx` (Perfilab)
 - `src/features/admin/pages.tsx`
 - `src/components/layout/PublicLayout.tsx`
 - `src/components/layout/AuthedLayout.tsx`
 - `src/components/layout/RoleSwitch.tsx`
 - `src/features/demo/useDemoRoleStore.ts`
+- `src/features/demo/useCompanySession.ts`
 - `src/services/mock/tokenValidator.ts`
 - `src/styles/tokens.css`
 

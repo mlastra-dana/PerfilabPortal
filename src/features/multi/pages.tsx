@@ -26,6 +26,7 @@ const danaButtonPrimary = "rounded-pill border border-[rgb(var(--dc-orange))] bg
 const danaButtonSecondary = "rounded-pill border border-[rgb(var(--dc-orange))] bg-[rgb(var(--dc-orange))] text-white shadow-none hover:opacity-90";
 const danaButtonDark = "rounded-pill border border-[rgb(var(--dc-orange))] bg-[rgb(var(--dc-orange))] text-white shadow-none hover:opacity-90";
 const danaButtonOutline = "rounded-pill border border-[rgb(var(--dc-orange))] bg-white text-[rgb(var(--dc-orange))] shadow-none hover:bg-[rgb(var(--dc-orange))/0.05]";
+const danaSolidStyle = { backgroundColor: "rgb(var(--dc-orange))", borderColor: "rgb(var(--dc-orange))", color: "#ffffff" };
 const danaField = "w-full rounded-md border border-[#cfd3d8] bg-white px-3 py-2 text-sm text-[#2d3138] outline-none focus:border-dana-primary focus:ring-2 focus:ring-dana-primary/20";
 const danaSelect = "w-full rounded-md border border-[#cfd3d8] bg-white px-3 py-2 text-sm text-[#2d3138] outline-none focus:border-dana-primary focus:ring-2 focus:ring-dana-primary/20";
 const danaPanel = "rounded-xl border border-[#d9dde2] bg-white shadow-none";
@@ -140,7 +141,7 @@ function DanaLayout({ children }: { children: ReactNode }) {
           </div>
           <div className="flex items-center gap-3">
             {showExit ? (
-              <Button className={danaButtonPrimary} onClick={exitToSelector}>
+              <Button className={danaButtonPrimary} style={danaSolidStyle} onClick={exitToSelector}>
                 Salir
               </Button>
             ) : null}
@@ -192,7 +193,7 @@ function DocumentPreviewModal({
             <p className="font-semibold">{document.title || document.studyName}</p>
             <p className="text-xs text-brand-muted">{(document.date || document.studyDate || "").slice(0, 10)}</p>
           </div>
-          <Button className={danaButtonDark} onClick={onClose}>Cerrar</Button>
+          <Button className={danaButtonDark} style={danaSolidStyle} onClick={onClose}>Cerrar</Button>
         </div>
         <div className="h-[72vh] bg-brand-surface p-4">
           {type === "image" ? (
@@ -240,12 +241,12 @@ function ShareModal({
           <Input id="secure-link-multi" readOnly value={secureUrl} className={danaField} />
         </div>
         <div className="mt-4 grid gap-2 sm:grid-cols-3">
-          <Button className={danaButtonSecondary} onClick={onCopy}>{copied ? "Copiado" : "Copiar enlace"}</Button>
-          <a href={whatsapp} target="_blank" rel="noreferrer"><Button className={`w-full ${danaButtonPrimary}`}>WhatsApp</Button></a>
-          <a href={email}><Button className={`w-full ${danaButtonDark}`}>Correo</Button></a>
+          <Button className={danaButtonSecondary} style={danaSolidStyle} onClick={onCopy}>{copied ? "Copiado" : "Copiar enlace"}</Button>
+          <a href={whatsapp} target="_blank" rel="noreferrer"><Button className={`w-full ${danaButtonPrimary}`} style={danaSolidStyle}>WhatsApp</Button></a>
+          <a href={email}><Button className={`w-full ${danaButtonDark}`} style={danaSolidStyle}>Correo</Button></a>
         </div>
         <div className="mt-4 flex justify-end">
-          <Button className={danaButtonSecondary} onClick={onClose}>Cerrar</Button>
+          <Button className={danaButtonSecondary} style={danaSolidStyle} onClick={onClose}>Cerrar</Button>
         </div>
       </Card>
     </div>
@@ -420,9 +421,9 @@ function IndustryDocumentsBoard({
                           <td className="px-4 py-3">{statusLabel(doc.status)}</td>
                           <td className="px-4 py-3">
                             <div className="flex flex-wrap gap-2">
-                              <Button className={danaButtonSecondary} onClick={() => setPreviewDoc(doc)}>Ver</Button>
-                              <Button className={danaButtonPrimary} onClick={() => onDownload(doc)}>Descargar</Button>
-                              <Button className={danaButtonDark} onClick={() => setShareDoc(doc)}>Compartir</Button>
+                              <Button className={danaButtonSecondary} style={danaSolidStyle} onClick={() => setPreviewDoc(doc)}>Ver</Button>
+                              <Button className={danaButtonPrimary} style={danaSolidStyle} onClick={() => onDownload(doc)}>Descargar</Button>
+                              <Button className={danaButtonDark} style={danaSolidStyle} onClick={() => setShareDoc(doc)}>Compartir</Button>
                             </div>
                           </td>
                         </tr>
@@ -437,9 +438,9 @@ function IndustryDocumentsBoard({
                       <p className="text-xs text-brand-muted">{doc.service || "General"} · {(doc.date || doc.studyDate || "").slice(0, 10)}</p>
                       <p className="mt-1 text-xs text-brand-muted">{statusLabel(doc.status)}</p>
                       <div className="mt-3 flex flex-wrap gap-2">
-                        <Button className={danaButtonSecondary} onClick={() => setPreviewDoc(doc)}>Ver</Button>
-                        <Button className={danaButtonPrimary} onClick={() => onDownload(doc)}>Descargar</Button>
-                        <Button className={danaButtonDark} onClick={() => setShareDoc(doc)}>Compartir</Button>
+                        <Button className={danaButtonSecondary} style={danaSolidStyle} onClick={() => setPreviewDoc(doc)}>Ver</Button>
+                        <Button className={danaButtonPrimary} style={danaSolidStyle} onClick={() => onDownload(doc)}>Descargar</Button>
+                        <Button className={danaButtonDark} style={danaSolidStyle} onClick={() => setShareDoc(doc)}>Compartir</Button>
                       </div>
                     </div>
                   ))}
@@ -459,8 +460,6 @@ function IndustryDocumentsBoard({
 export function MultiIndustryLandingPage() {
   const navigate = useNavigate();
   const [industry, setIndustry] = useState<Industry>("laboratorio");
-  const danaSolidStyle = { backgroundColor: "rgb(var(--dc-orange))", borderColor: "rgb(var(--dc-orange))" };
-  const danaOutlineStyle = { color: "rgb(var(--dc-orange))", borderColor: "rgb(var(--dc-orange))", backgroundColor: "#ffffff" };
 
   return (
     <div className="min-h-screen bg-[#efefef] text-[#2d3138]">
@@ -490,7 +489,7 @@ export function MultiIndustryLandingPage() {
 
           <div className="flex items-center gap-3 justify-self-end">
             <Button className={danaButtonPrimary} style={danaSolidStyle}>VIDEO TOUR</Button>
-            <Button className={danaButtonOutline} style={danaOutlineStyle}>SOLICITE UNA DEMO</Button>
+            <Button className={danaButtonOutline} style={danaSolidStyle}>SOLICITE UNA DEMO</Button>
           </div>
         </div>
       </header>
@@ -609,7 +608,7 @@ export function IndustryAccessPage() {
               </div>
             ) : null}
             {error ? <Alert variant="warn">{error}</Alert> : null}
-            <Button type="submit" className={danaButtonPrimary}>Ver mis documentos</Button>
+            <Button type="submit" className={danaButtonPrimary} style={danaSolidStyle}>Ver mis documentos</Button>
           </form>
 
           <div className="mt-4 rounded-xl border border-brand-border bg-brand-surface p-3 text-sm">
