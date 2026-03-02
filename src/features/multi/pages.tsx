@@ -1,14 +1,14 @@
-import { FormEvent, ReactNode, useMemo, useState } from "react";
-import { Link, Navigate, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { FormEvent, useMemo, useState } from "react";
+import { Link, Navigate, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { ResultDocument } from "@/app/types";
 import { AccessPageTemplate } from "@/components/AccessPageTemplate";
+import { DanaLayout } from "@/components/layout/DanaLayout";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
-import { useCompanySession } from "@/features/demo/useCompanySession";
 import { useDemoRoleStore } from "@/features/demo/useDemoRoleStore";
 import { InsurerDocument, insurerDocuments } from "@/mocks/aseguradora/documents";
 import { rrhhDocuments } from "@/mocks/rrhh/documents";
@@ -17,7 +17,7 @@ import { universityDocuments } from "@/mocks/universidad/documents";
 type Industry = "laboratorio" | "universidad" | "rrhh" | "aseguradora";
 
 const industries: Array<{ key: Industry; label: string }> = [
-  { key: "laboratorio", label: "Laboratorio" },
+  { key: "laboratorio", label: "Servicios médicos" },
   { key: "universidad", label: "Universidad" },
   { key: "rrhh", label: "RRHH" },
   { key: "aseguradora", label: "Aseguradora" },
@@ -26,7 +26,6 @@ const industries: Array<{ key: Industry; label: string }> = [
 const danaButtonPrimary = "rounded-pill border border-[rgb(var(--dc-orange))] bg-[rgb(var(--dc-orange))] text-white shadow-none hover:opacity-90";
 const danaButtonSecondary = "rounded-pill border border-[rgb(var(--dc-orange))] bg-[rgb(var(--dc-orange))] text-white shadow-none hover:opacity-90";
 const danaButtonDark = "rounded-pill border border-[rgb(var(--dc-orange))] bg-[rgb(var(--dc-orange))] text-white shadow-none hover:opacity-90";
-const danaButtonOutline = "rounded-pill border border-[rgb(var(--dc-orange))] bg-white text-[rgb(var(--dc-orange))] shadow-none hover:bg-[rgb(var(--dc-orange))/0.05]";
 const danaSolidStyle = { backgroundColor: "rgb(var(--dc-orange))", borderColor: "rgb(var(--dc-orange))", color: "#ffffff" };
 const danaField = "w-full rounded-md border border-[#cfd3d8] bg-white px-3 py-2 text-sm text-[#2d3138] outline-none focus:border-dana-primary focus:ring-2 focus:ring-dana-primary/20";
 const danaSelect = "w-full rounded-md border border-[#cfd3d8] bg-white px-3 py-2 text-sm text-[#2d3138] outline-none focus:border-dana-primary focus:ring-2 focus:ring-dana-primary/20";
@@ -122,38 +121,6 @@ const industryProfiles: Record<Exclude<Industry, "laboratorio">, Record<string, 
   },
 };
 
-function DanaLayout({ children }: { children: ReactNode }) {
-  const location = useLocation();
-  const { exitToSelector } = useCompanySession();
-  const showExit = location.pathname !== "/" && location.pathname !== "/multi";
-
-  return (
-    <div className="min-h-screen bg-[#f5f5f5] text-[#2d3138]">
-      <header className="border-b border-[#e5e7eb] bg-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
-          <Link to="/" aria-label="Volver al inicio multiempresa">
-            <img src="/brand/logo-danaconnect-horizontal.png" alt="DANAconnect" className="h-10 w-auto object-contain" />
-          </Link>
-          <div className="hidden items-center gap-6 text-sm text-[#5b6068] md:flex">
-            <span>Platform</span>
-            <span>Use Cases</span>
-            <span>Services</span>
-            <span>Resources</span>
-          </div>
-          <div className="flex items-center gap-3">
-            {showExit ? (
-              <Button className={danaButtonPrimary} style={danaSolidStyle} onClick={exitToSelector}>
-                Salir
-              </Button>
-            ) : null}
-          </div>
-        </div>
-      </header>
-      <main>{children}</main>
-    </div>
-  );
-}
-
 function isIndustry(value: string | undefined): value is Industry {
   return value === "laboratorio" || value === "universidad" || value === "rrhh" || value === "aseguradora";
 }
@@ -173,6 +140,10 @@ function resolveName(doc: ResultDocument) {
 
 function statusLabel(status: ResultDocument["status"]) {
   return status === "nuevo" ? "No visto" : "Visto";
+}
+
+function displayServiceLabel(value: string) {
+  return value === "Laboratorio" ? "Servicios médicos" : value;
 }
 
 function DocumentPreviewModal({
@@ -336,7 +307,7 @@ function IndustryDocumentsBoard({
       <section className="mx-auto max-w-7xl px-4 py-8">
         <Card className={danaPanel}>
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <h1 className="text-xl font-bold">Documentos {industry.toUpperCase()}</h1>
+                <h1 className="text-xl font-bold">Documentos {industry.toUpperCase()}</h1>
             <span className="rounded-pill bg-brand-surface px-3 py-1 text-xs font-semibold text-brand-muted">
               Documento: {documentId || "N/A"}
             </span>
@@ -378,7 +349,7 @@ function IndustryDocumentsBoard({
                     className={danaSelect}
                   >
                     {serviceOptions.map((item) => (
-                      <option key={item} value={item}>{item === "all" ? "Todos" : item}</option>
+                      <option key={item} value={item}>{item === "all" ? "Todos" : displayServiceLabel(item)}</option>
                     ))}
                   </select>
                 </div>
@@ -417,7 +388,7 @@ function IndustryDocumentsBoard({
                             <p className="font-semibold">{doc.title || doc.studyName}</p>
                             <p className="text-xs text-brand-muted">{doc.fileName}</p>
                           </td>
-                          <td className="px-4 py-3">{doc.service || "General"}</td>
+                          <td className="px-4 py-3">{displayServiceLabel(doc.service || "General")}</td>
                           <td className="px-4 py-3">{(doc.date || doc.studyDate || "").replace("T", " ").slice(0, 16)}</td>
                           <td className="px-4 py-3">{statusLabel(doc.status)}</td>
                           <td className="px-4 py-3">
@@ -436,7 +407,7 @@ function IndustryDocumentsBoard({
                   {filtered.map((doc) => (
                     <div key={doc.id} className="rounded-md border border-[#d9dde2] p-3">
                       <p className="font-semibold">{doc.title || doc.studyName}</p>
-                      <p className="text-xs text-brand-muted">{doc.service || "General"} · {(doc.date || doc.studyDate || "").slice(0, 10)}</p>
+                      <p className="text-xs text-brand-muted">{displayServiceLabel(doc.service || "General")} · {(doc.date || doc.studyDate || "").slice(0, 10)}</p>
                       <p className="mt-1 text-xs text-brand-muted">{statusLabel(doc.status)}</p>
                       <div className="mt-3 flex flex-wrap gap-2">
                         <Button className={danaButtonSecondary} style={danaSolidStyle} onClick={() => setPreviewDoc(doc)}>Ver</Button>
@@ -543,7 +514,7 @@ export function IndustryAccessPage() {
 
   const isInsurer = industry === "aseguradora";
   const titleMap: Record<Industry, string> = {
-    laboratorio: "Acceso Laboratorio",
+    laboratorio: "Acceso Servicios médicos",
     universidad: "Acceso Universidad",
     rrhh: "Acceso RRHH",
     aseguradora: "Acceso Aseguradora",

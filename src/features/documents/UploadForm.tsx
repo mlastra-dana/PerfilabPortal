@@ -78,7 +78,7 @@ export function UploadForm({ patient, actor }: Props) {
           >
             {categories.map((option) => (
               <option key={option} value={option}>
-                {option}
+                {option === "Laboratorio" ? "Servicios médicos" : option}
               </option>
             ))}
           </select>

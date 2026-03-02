@@ -36,7 +36,7 @@ export function ResultsFilters({ filters, onChange }: Props) {
           className="w-full rounded-xl border bg-white px-3 py-2 text-sm"
         >
           <option value="">Todos</option>
-          <option value="Laboratorio">Laboratorio</option>
+          <option value="Laboratorio">Servicios médicos</option>
           <option value="Rayos X">Rayos X</option>
           <option value="Mamografias">Mamografias</option>
         </select>

@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { ResultDocument } from "@/app/types";
-import { AuthedLayout } from "@/components/layout/AuthedLayout";
-import { Badge } from "@/components/ui/Badge";
+import { DanaLayout } from "@/components/layout/DanaLayout";
+import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
@@ -12,9 +12,15 @@ import { useDemoRoleStore } from "@/features/demo/useDemoRoleStore";
 import { useResultsStore } from "@/features/results/useResultsStore";
 import { mockPatients } from "@/mocks/patients";
 
-const patientNav = [{ to: "/results/labs", label: "Mis documentos" }];
-
 type ServiceFilter = "all" | "Laboratorio" | "Imagenología" | "Histopatología" | string;
+
+const danaButtonPrimary = "rounded-pill border border-[rgb(var(--dc-orange))] bg-[rgb(var(--dc-orange))] text-white shadow-none hover:opacity-90";
+const danaButtonSecondary = "rounded-pill border border-[rgb(var(--dc-orange))] bg-[rgb(var(--dc-orange))] text-white shadow-none hover:opacity-90";
+const danaButtonDark = "rounded-pill border border-[rgb(var(--dc-orange))] bg-[rgb(var(--dc-orange))] text-white shadow-none hover:opacity-90";
+const danaSolidStyle = { backgroundColor: "rgb(var(--dc-orange))", borderColor: "rgb(var(--dc-orange))", color: "#ffffff" };
+const danaField = "w-full rounded-md border border-[#cfd3d8] bg-white px-3 py-2 text-sm text-[#2d3138] outline-none focus:border-dana-primary focus:ring-2 focus:ring-dana-primary/20";
+const danaSelect = "w-full rounded-md border border-[#cfd3d8] bg-white px-3 py-2 text-sm text-[#2d3138] outline-none focus:border-dana-primary focus:ring-2 focus:ring-dana-primary/20";
+const danaPanel = "rounded-xl border border-[#d9dde2] bg-white shadow-none";
 
 function useActivePatient() {
   const patientSession = useDemoRoleStore((s) => s.patientSession);
@@ -57,31 +63,8 @@ function resolveStatusLabel(status: ResultDocument["status"]) {
   return status === "nuevo" ? "No visto" : "Visto";
 }
 
-function PatientInfoCard() {
-  const patient = useActivePatient();
-
-  if (!patient) {
-    return (
-      <Card>
-        <h2 className="text-lg font-semibold">No hay resultados para esta cédula</h2>
-        <p className="mt-2 text-sm text-brand-muted">Ingresa con una cédula válida para consultar documentos.</p>
-      </Card>
-    );
-  }
-
-  return (
-    <Card>
-      <h2 className="mb-2 text-base font-semibold">Información general del paciente</h2>
-      <div className="grid gap-2 text-sm md:grid-cols-2">
-        <p><strong>Nombre:</strong> {patient.fullName}</p>
-        <p><strong>Documento:</strong> {patient.documentId}</p>
-        <p><strong>Fecha de nacimiento:</strong> {patient.birthDate}</p>
-        <p><strong>Teléfono:</strong> {patient.phone}</p>
-        <p><strong>Correo:</strong> {patient.email}</p>
-        <p><strong>Empresa:</strong> {patient.company}</p>
-      </div>
-    </Card>
-  );
+function displayServiceLabel(value: string) {
+  return value === "Laboratorio" ? "Servicios médicos" : value;
 }
 
 function DocumentPreviewModal({
@@ -100,19 +83,19 @@ function DocumentPreviewModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" role="dialog" aria-modal="true">
-      <Card className="max-h-[90vh] w-full max-w-4xl overflow-hidden p-0">
+      <Card className={`max-h-[90vh] w-full max-w-5xl overflow-hidden p-0 ${danaPanel}`}>
         <div className="flex items-center justify-between border-b border-brand-border px-4 py-3">
           <div>
             <p className="font-semibold">{document.title || document.studyName}</p>
             <p className="text-xs text-brand-muted">{(document.date || document.studyDate || "").slice(0, 10)}</p>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="ghost" onClick={() => onDownload(document)}>Descargar</Button>
-            <Button variant="dark" onClick={onClose}>Cerrar</Button>
+            <Button className={danaButtonSecondary} style={danaSolidStyle} onClick={() => onDownload(document)}>Descargar</Button>
+            <Button className={danaButtonDark} style={danaSolidStyle} onClick={onClose}>Cerrar</Button>
           </div>
         </div>
 
-        <div className="h-[70vh] bg-brand-surface p-4">
+        <div className="h-[72vh] bg-brand-surface p-4">
           {docType === "image" ? (
             <img src={url} alt={document.title || document.studyName} className="h-full w-full rounded-xl object-contain" />
           ) : (
@@ -156,27 +139,27 @@ function ShareDocumentModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" role="dialog" aria-modal="true">
-      <Card className="w-full max-w-lg">
+      <Card className={`w-full max-w-xl ${danaPanel}`}>
         <h3 className="text-lg font-semibold">Compartir documento</h3>
         <p className="mt-1 text-sm text-brand-muted">{document.title || document.studyName}</p>
 
         <div className="mt-4">
-          <Label htmlFor="secure-link">Enlace seguro (demo)</Label>
-          <Input id="secure-link" value={shareUrl} readOnly />
+          <Label htmlFor="secure-link">Enlace seguro</Label>
+          <Input id="secure-link" value={shareUrl} readOnly className={danaField} />
         </div>
 
         <div className="mt-4 grid gap-2 sm:grid-cols-3">
-          <Button variant="ghost" onClick={onCopy}>{copied ? "Copiado" : "Copiar enlace"}</Button>
+          <Button className={danaButtonSecondary} style={danaSolidStyle} onClick={onCopy}>{copied ? "Copiado" : "Copiar enlace"}</Button>
           <a href={whatsappUrl} target="_blank" rel="noreferrer">
-            <Button className="w-full">Enviar por WhatsApp</Button>
+            <Button className={`w-full ${danaButtonPrimary}`} style={danaSolidStyle}>WhatsApp</Button>
           </a>
           <a href={mailtoUrl}>
-            <Button variant="dark" className="w-full">Enviar por correo</Button>
+            <Button className={`w-full ${danaButtonDark}`} style={danaSolidStyle}>Correo</Button>
           </a>
         </div>
 
         <div className="mt-4 flex justify-end">
-          <Button variant="ghost" onClick={onClose}>Cerrar</Button>
+          <Button className={danaButtonSecondary} style={danaSolidStyle} onClick={onClose}>Cerrar</Button>
         </div>
       </Card>
     </div>
@@ -227,14 +210,6 @@ export function PatientMedicalResultsPage() {
     return ["all", ...base, ...extras];
   }, [patientDocs]);
 
-  const onSelectService = (option: ServiceFilter) => {
-    setServiceInput(option);
-    setAppliedFilters((prev) => ({
-      ...prev,
-      service: option,
-    }));
-  };
-
   const applyFilters = () => {
     setAppliedFilters({
       query: queryInput,
@@ -263,10 +238,6 @@ export function PatientMedicalResultsPage() {
     addEvent("document_view", actor, `Visualizacion de documento ${doc.id}`);
   };
 
-  const openShareModal = (doc: ResultDocument) => {
-    setShareDoc(doc);
-  };
-
   const downloadDocument = async (doc: ResultDocument) => {
     addEvent("download_clicked", actor, `Descarga documento ${doc.id}`);
     const url = resolveDocumentUrl(doc);
@@ -287,7 +258,6 @@ export function PatientMedicalResultsPage() {
       anchor.remove();
       window.URL.revokeObjectURL(objectUrl);
     } catch {
-      // Fallback para navegadores moviles que bloquean download por blob.
       const anchor = document.createElement("a");
       anchor.href = url;
       anchor.download = fileName;
@@ -300,180 +270,157 @@ export function PatientMedicalResultsPage() {
   };
 
   return (
-    <AuthedLayout title="Documentos de laboratorio" items={patientNav}>
-      <PatientInfoCard />
-
-      <Card className="mt-4">
-        <h2 className="mb-3 text-base font-semibold">Mis documentos</h2>
-        <div className="mb-4 overflow-auto rounded-xl border border-brand-border bg-brand-surface/70 p-2">
-          <div className="flex min-w-max gap-2">
-            {serviceOptions.map((option) => {
-              const active = serviceInput === option;
-              return (
-                <button
-                  key={option}
-                  type="button"
-                  onClick={() => onSelectService(option as ServiceFilter)}
-                  className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                    active ? "bg-brand-primary text-white" : "bg-white text-brand-text hover:bg-brand-primary/10"
-                  }`}
-                >
-                  {option === "all" ? "Todos" : option}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="grid gap-3 md:grid-cols-5">
-          <div className="md:col-span-2">
-            <Label htmlFor="search-doc">Buscar documento</Label>
-            <Input
-              id="search-doc"
-              placeholder="Nombre del estudio o archivo"
-              value={queryInput}
-              onChange={(event) => setQueryInput(event.target.value)}
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="service-doc">Servicio / Tipo de examen</Label>
-            <select
-              id="service-doc"
-              value={serviceInput}
-              onChange={(event) => setServiceInput(event.target.value as ServiceFilter)}
-              className="w-full rounded-xl border border-brand-border bg-white px-3 py-2 text-sm"
-            >
-              {serviceOptions.map((option) => (
-                <option key={option} value={option}>
-                  {option === "all" ? "Todos" : option}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="grid grid-cols-2 gap-2 md:col-span-2">
-            <div>
-              <Label htmlFor="from-doc">Desde</Label>
-              <Input id="from-doc" type="date" value={fromDateInput} onChange={(event) => setFromDateInput(event.target.value)} />
-            </div>
-            <div>
-              <Label htmlFor="to-doc">Hasta</Label>
-              <Input id="to-doc" type="date" value={toDateInput} onChange={(event) => setToDateInput(event.target.value)} />
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-3 flex justify-end gap-2">
-          <Button variant="ghost" onClick={clearFilters}>Limpiar</Button>
-          <Button onClick={applyFilters}>Buscar</Button>
-        </div>
-
-        <p className="mt-3 text-sm text-brand-muted">
-          {docs.length === 1
-            ? "Mostrado último 1 documento"
-            : `Mostrados últimos ${docs.length} documentos`}
-        </p>
-      </Card>
-
-      {!patient ? (
-        <Card className="mt-4">
-          <h2 className="text-lg font-semibold">No hay resultados para esta cédula</h2>
-          <p className="mt-2 text-sm text-brand-muted">Vuelve a ingresar con un documento válido.</p>
-          <Link to="/access" className="mt-4 inline-block">
-            <Button>Ingresar cédula</Button>
-          </Link>
-        </Card>
-      ) : docs.length === 0 ? (
-        <Card className="mt-4">
-          <h2 className="text-lg font-semibold">No hay documentos para los filtros seleccionados</h2>
-          <p className="mt-2 text-sm text-brand-muted">Limpia los filtros para ver todos los archivos de la cédula actual.</p>
-          <div className="mt-4">
-            <Button onClick={clearFilters}>Limpiar filtros</Button>
+    <DanaLayout>
+      <section className="mx-auto max-w-7xl px-4 py-8">
+        <Card className={danaPanel}>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h1 className="text-xl font-bold">Documentos SERVICIOS MEDICOS</h1>
+            <span className="rounded-pill bg-brand-surface px-3 py-1 text-xs font-semibold text-brand-muted">
+              Documento: {patient?.documentId || "N/A"}
+            </span>
           </div>
         </Card>
-      ) : (
-        <div className="mt-4 overflow-hidden rounded-2xl border border-brand-border bg-white">
-          <div className="hidden overflow-auto md:block">
-            <table className="w-full min-w-[900px] text-left text-sm">
-              <thead className="bg-brand-surface text-brand-muted">
-                <tr>
-                  <th className="px-4 py-3 font-semibold">Nombre del estudio</th>
-                  <th className="px-4 py-3 font-semibold">Tipo/Servicio</th>
-                  <th className="px-4 py-3 font-semibold">Fecha</th>
-                  <th className="px-4 py-3 font-semibold">Estado</th>
-                  <th className="px-4 py-3 font-semibold">Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {docs.map((doc) => {
-                  const typeLabel = resolveDocumentService(doc);
-                  const dateLabel = (doc.createdAt || doc.date || doc.studyDate || "").replace("T", " ").slice(0, 16);
 
-                  return (
-                    <tr key={doc.id} className="border-t border-brand-border align-middle">
-                      <td className="px-4 py-3">
-                        <p className="font-semibold">{doc.title || doc.studyName}</p>
-                        <p className="text-xs text-brand-muted">{doc.fileName}</p>
-                      </td>
-                      <td className="px-4 py-3">{typeLabel}</td>
-                      <td className="px-4 py-3">{dateLabel}</td>
-                      <td className="px-4 py-3">
-                        <Badge tone={doc.status === "nuevo" ? "warn" : "neutral"}>{resolveStatusLabel(doc.status)}</Badge>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex flex-wrap gap-2">
-                          <Button variant="ghost" onClick={() => openDocument(doc)}>
-                            <span className="mr-1 inline-flex" aria-hidden="true">
-                              <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current"><path d="M12 5c-5.5 0-9.6 4.6-10.8 6.3a1.2 1.2 0 0 0 0 1.4C2.4 14.4 6.5 19 12 19s9.6-4.6 10.8-6.3a1.2 1.2 0 0 0 0-1.4C21.6 9.6 17.5 5 12 5Zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z" /></svg>
-                            </span>
-                            Ver
-                          </Button>
-                          <Button onClick={() => downloadDocument(doc)}>Descargar</Button>
-                          <Button variant="dark" onClick={() => openShareModal(doc)}>Compartir</Button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+        {!patient ? (
+          <Card className={`mt-4 ${danaPanel}`}>
+            <Alert variant="warn">No hay resultados para esta cédula.</Alert>
+            <Link to="/access" className="mt-4 inline-block">
+              <Button className={danaButtonPrimary} style={danaSolidStyle}>Ingresar cédula</Button>
+            </Link>
+          </Card>
+        ) : (
+          <>
+            <Card className={`mt-4 ${danaPanel}`}>
+              <h2 className="mb-2 text-base font-semibold">Información del cliente</h2>
+              <div className="grid gap-2 text-sm md:grid-cols-2">
+                <p><strong>Nombre:</strong> {patient.fullName}</p>
+                <p><strong>Documento:</strong> {patient.documentId}</p>
+                <p><strong>Correo:</strong> {patient.email}</p>
+                <p><strong>Organización:</strong> {patient.company}</p>
+                <p><strong>Perfil:</strong> Paciente</p>
+                <p><strong>Fecha de nacimiento:</strong> {patient.birthDate}</p>
+              </div>
+            </Card>
 
-          <div className="space-y-3 p-3 md:hidden">
-            {docs.map((doc) => {
-              const typeLabel = resolveDocumentService(doc);
-              const dateLabel = (doc.createdAt || doc.date || doc.studyDate || "").replace("T", " ").slice(0, 16);
-
-              return (
-                <div key={doc.id} className="rounded-xl border border-brand-border p-3">
-                  <div className="flex items-start justify-between gap-2">
-                    <div>
-                      <p className="font-semibold">{doc.title || doc.studyName}</p>
-                      <p className="text-xs text-brand-muted">{typeLabel} · {dateLabel}</p>
-                    </div>
-                    <Badge tone={doc.status === "nuevo" ? "warn" : "neutral"}>{resolveStatusLabel(doc.status)}</Badge>
-                  </div>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <Button variant="ghost" onClick={() => openDocument(doc)}>
-                      <span className="mr-1 inline-flex" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current"><path d="M12 5c-5.5 0-9.6 4.6-10.8 6.3a1.2 1.2 0 0 0 0 1.4C2.4 14.4 6.5 19 12 19s9.6-4.6 10.8-6.3a1.2 1.2 0 0 0 0-1.4C21.6 9.6 17.5 5 12 5Zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z" /></svg>
-                      </span>
-                      Ver
-                    </Button>
-                    <Button onClick={() => downloadDocument(doc)}>Descargar</Button>
-                    <Button variant="dark" onClick={() => openShareModal(doc)}>Compartir</Button>
-                  </div>
+            <Card className={`mt-4 ${danaPanel}`}>
+              <div className="grid gap-3 md:grid-cols-12">
+                <div className="md:col-span-5">
+                  <Label htmlFor="search-doc">Buscar</Label>
+                  <Input
+                    id="search-doc"
+                    placeholder="Nombre del documento"
+                    value={queryInput}
+                    onChange={(event) => setQueryInput(event.target.value)}
+                    className={danaField}
+                  />
                 </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
+
+                <div className="md:col-span-3">
+                  <Label htmlFor="service-doc">Servicio/Tipo</Label>
+                  <select
+                    id="service-doc"
+                    value={serviceInput}
+                    onChange={(event) => setServiceInput(event.target.value as ServiceFilter)}
+                    className={danaSelect}
+                  >
+                    {serviceOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option === "all" ? "Todos" : displayServiceLabel(option)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="md:col-span-2">
+                  <Label htmlFor="from-doc">Desde</Label>
+                  <Input id="from-doc" type="date" value={fromDateInput} onChange={(event) => setFromDateInput(event.target.value)} className={danaField} />
+                </div>
+
+                <div className="md:col-span-2">
+                  <Label htmlFor="to-doc">Hasta</Label>
+                  <Input id="to-doc" type="date" value={toDateInput} onChange={(event) => setToDateInput(event.target.value)} className={danaField} />
+                </div>
+              </div>
+
+              <div className="mt-4 flex justify-end gap-2">
+                <Button className={danaButtonSecondary} style={danaSolidStyle} onClick={clearFilters}>Limpiar</Button>
+                <Button className={danaButtonPrimary} style={danaSolidStyle} onClick={applyFilters}>Buscar</Button>
+              </div>
+            </Card>
+
+            {docs.length === 0 ? (
+              <Card className={`mt-4 ${danaPanel}`}>
+                <Alert variant="warn">No hay resultados para ese filtro.</Alert>
+              </Card>
+            ) : (
+              <div className="mt-4 overflow-hidden rounded-xl border border-[#d9dde2] bg-white">
+                <div className="hidden overflow-auto md:block">
+                  <table className="w-full min-w-[900px] text-left text-sm">
+                    <thead className="bg-[#f3f4f6] text-[#616773]">
+                      <tr>
+                        <th className="px-4 py-3 font-semibold">Nombre</th>
+                        <th className="px-4 py-3 font-semibold">Servicio</th>
+                        <th className="px-4 py-3 font-semibold">Fecha</th>
+                        <th className="px-4 py-3 font-semibold">Estado</th>
+                        <th className="px-4 py-3 font-semibold">Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {docs.map((doc) => {
+                        const typeLabel = displayServiceLabel(resolveDocumentService(doc));
+                        const dateLabel = (doc.createdAt || doc.date || doc.studyDate || "").replace("T", " ").slice(0, 16);
+
+                        return (
+                          <tr key={doc.id} className="border-t border-[#e3e6eb]">
+                            <td className="px-4 py-3">
+                              <p className="font-semibold">{doc.title || doc.studyName}</p>
+                              <p className="text-xs text-brand-muted">{doc.fileName}</p>
+                            </td>
+                            <td className="px-4 py-3">{typeLabel}</td>
+                            <td className="px-4 py-3">{dateLabel}</td>
+                            <td className="px-4 py-3">{resolveStatusLabel(doc.status)}</td>
+                            <td className="px-4 py-3">
+                              <div className="flex flex-wrap gap-2">
+                                <Button className={danaButtonSecondary} style={danaSolidStyle} onClick={() => openDocument(doc)}>Ver</Button>
+                                <Button className={danaButtonPrimary} style={danaSolidStyle} onClick={() => downloadDocument(doc)}>Descargar</Button>
+                                <Button className={danaButtonDark} style={danaSolidStyle} onClick={() => setShareDoc(doc)}>Compartir</Button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="space-y-3 p-3 md:hidden">
+                  {docs.map((doc) => {
+                    const typeLabel = displayServiceLabel(resolveDocumentService(doc));
+                    const dateLabel = (doc.createdAt || doc.date || doc.studyDate || "").slice(0, 10);
+
+                    return (
+                      <div key={doc.id} className="rounded-md border border-[#d9dde2] p-3">
+                        <p className="font-semibold">{doc.title || doc.studyName}</p>
+                        <p className="text-xs text-brand-muted">{typeLabel} · {dateLabel}</p>
+                        <p className="mt-1 text-xs text-brand-muted">{resolveStatusLabel(doc.status)}</p>
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          <Button className={danaButtonSecondary} style={danaSolidStyle} onClick={() => openDocument(doc)}>Ver</Button>
+                          <Button className={danaButtonPrimary} style={danaSolidStyle} onClick={() => downloadDocument(doc)}>Descargar</Button>
+                          <Button className={danaButtonDark} style={danaSolidStyle} onClick={() => setShareDoc(doc)}>Compartir</Button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </section>
 
       <DocumentPreviewModal document={selectedDoc} onClose={() => setSelectedDoc(null)} onDownload={downloadDocument} />
       <ShareDocumentModal document={shareDoc} onClose={() => setShareDoc(null)} />
-    </AuthedLayout>
+    </DanaLayout>
   );
 }
 

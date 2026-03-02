@@ -61,7 +61,7 @@ export function AccessPage() {
 
   return (
     <AccessPageTemplate
-      industryName="Laboratorio"
+      industryName="Servicios médicos"
       documentId={documentId}
       onDocumentIdChange={setDocumentId}
       onSubmit={onSubmit}
