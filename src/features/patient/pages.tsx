@@ -12,7 +12,7 @@ import { useDemoRoleStore } from "@/features/demo/useDemoRoleStore";
 import { useResultsStore } from "@/features/results/useResultsStore";
 import { mockPatients } from "@/mocks/patients";
 
-const patientNav = [{ to: "/results/labs", label: "Mis Resultados" }];
+const patientNav = [{ to: "/results/labs", label: "Mis documentos" }];
 
 type ServiceFilter = "all" | "Laboratorio" | "Imagenología" | "Histopatología" | string;
 
@@ -125,7 +125,7 @@ function DocumentPreviewModal({
 }
 
 function buildShareUrl(documentId: string) {
-  return `https://demo.perfilab.com/r/${documentId}`;
+  return `https://demo.danaconnect.com/r/${documentId}`;
 }
 
 function ShareDocumentModal({
@@ -140,9 +140,9 @@ function ShareDocumentModal({
   if (!document) return null;
 
   const shareUrl = buildShareUrl(document.id);
-  const message = `Hola, te comparto mi resultado médico: ${shareUrl}`;
+  const message = `Hola, te comparto mi documento: ${shareUrl}`;
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
-  const mailtoUrl = `mailto:?subject=${encodeURIComponent("Resultado Médico Perfilab")}&body=${encodeURIComponent(`Te comparto mi resultado: ${shareUrl}`)}`;
+  const mailtoUrl = `mailto:?subject=${encodeURIComponent("Documento DanaConnect")}&body=${encodeURIComponent(`Te comparto mi documento: ${shareUrl}`)}`;
 
   const onCopy = async () => {
     try {
@@ -157,7 +157,7 @@ function ShareDocumentModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" role="dialog" aria-modal="true">
       <Card className="w-full max-w-lg">
-        <h3 className="text-lg font-semibold">Compartir resultado</h3>
+        <h3 className="text-lg font-semibold">Compartir documento</h3>
         <p className="mt-1 text-sm text-brand-muted">{document.title || document.studyName}</p>
 
         <div className="mt-4">
@@ -300,11 +300,11 @@ export function PatientMedicalResultsPage() {
   };
 
   return (
-    <AuthedLayout title="Resultados Médicos" items={patientNav}>
+    <AuthedLayout title="Documentos de laboratorio" items={patientNav}>
       <PatientInfoCard />
 
       <Card className="mt-4">
-        <h2 className="mb-3 text-base font-semibold">Mis Resultados</h2>
+        <h2 className="mb-3 text-base font-semibold">Mis documentos</h2>
         <div className="mb-4 overflow-auto rounded-xl border border-brand-border bg-brand-surface/70 p-2">
           <div className="flex min-w-max gap-2">
             {serviceOptions.map((option) => {

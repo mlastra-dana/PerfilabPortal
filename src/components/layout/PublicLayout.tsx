@@ -11,8 +11,8 @@ export function PublicLayout({ children }: { children: ReactNode }) {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
           <div className="flex items-center gap-3">
             <img
-              src="/brand/perfilab-logo.png"
-              alt="Perfilab"
+              src="/brand/logo-danaconnect-horizontal.png"
+              alt="DanaConnect"
               className="h-8 w-auto max-w-[180px] object-contain sm:max-w-[220px]"
             />
           </div>
@@ -30,8 +30,8 @@ export function PublicLayout({ children }: { children: ReactNode }) {
 
       <section className="mt-16 bg-brand-ink py-12 text-white" id="contacto">
         <div className="mx-auto flex max-w-7xl flex-col items-center gap-3 px-4">
-          <img src="/brand/perfilab-logo.png" alt="Perfilab" className="h-8 w-auto object-contain" />
-          <p className="text-lg font-semibold">Perfilab</p>
+          <img src="/brand/logo-danaconnect-horizontal.png" alt="DanaConnect" className="h-8 w-auto object-contain" />
+          <p className="text-lg font-semibold">DanaConnect</p>
           <p className="text-sm text-white/75">Siguenos en nuestras redes</p>
         </div>
       </section>

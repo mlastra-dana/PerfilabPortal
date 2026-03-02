@@ -14,7 +14,7 @@ import { mockPatients } from "@/mocks/patients";
 
 const adminNav = [
   { to: "/admin/patients", label: "Pacientes" },
-  { to: "/admin/uploads", label: "Carga de Resultados" },
+  { to: "/admin/uploads", label: "Carga de documentos" },
   { to: "/admin/audit", label: "Auditoria" },
 ];
 
@@ -66,9 +66,9 @@ export function AdminUploadsPage() {
   const selected = rows.find((row) => row.id === selectedId);
 
   return (
-    <AuthedLayout title="Admin · Carga de Resultados" items={adminNav}>
+    <AuthedLayout title="Admin · Carga de documentos" items={adminNav}>
       <AdminGuard>
-        <Alert>Sube resultados médicos con metadatos. Persistencia real pendiente (modo demostración).</Alert>
+        <Alert>Sube documentos con metadatos. Persistencia real pendiente (modo demostración).</Alert>
 
         <Card className="mt-3">
           <Label htmlFor="search-upload">Buscar paciente</Label>
@@ -106,7 +106,7 @@ export function AdminAuditPage() {
     <AuthedLayout title="Admin · Auditoria" items={adminNav}>
       <AdminGuard>
         <Card>
-          <h2 className="text-base font-semibold">Trazabilidad de Resultados Médicos</h2>
+          <h2 className="text-base font-semibold">Trazabilidad de documentos</h2>
           <p className="mt-2 text-sm text-brand-muted">Eventos demo: role_changed, page_view, document_view, download_clicked.</p>
         </Card>
         <div className="mt-3">

@@ -27,7 +27,7 @@ export function AuthedLayout({ title, items, children }: Props) {
       <div className="md:flex">
         <aside className="w-full border-r border-brand-ink/20 bg-brand-ink p-4 text-white md:flex md:min-h-screen md:w-64 md:flex-col">
           <Link to="/" className="mb-4 flex items-center gap-2">
-            <img src="/brand/perfilab-logo.png" alt="Perfilab" className="h-8 w-auto max-w-[140px] object-contain" />
+            <img src="/brand/logo-danaconnect-horizontal.png" alt="DanaConnect" className="h-8 w-auto max-w-[170px] object-contain" />
           </Link>
           <nav className="no-scrollbar flex gap-2 overflow-x-auto md:block md:space-y-1">
             {items.map((item) => (
@@ -49,9 +49,9 @@ export function AuthedLayout({ title, items, children }: Props) {
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="min-w-0">
                 <div className="mb-1 flex items-center gap-3">
-                  <img src="/brand/perfilab-logo.png" alt="Perfilab" className="h-8 w-auto max-w-[170px] object-contain" />
+                  <img src="/brand/logo-danaconnect-horizontal.png" alt="DanaConnect" className="h-8 w-auto max-w-[190px] object-contain" />
                 </div>
-                <p className="text-xs text-brand-muted">Resultados Médicos / {location.pathname}</p>
+                <p className="text-xs text-brand-muted">Multiempresas de visual/descarga documentos / {location.pathname}</p>
                 <p className="text-sm font-medium">{title}</p>
               </div>
               <div className="flex items-center gap-2">

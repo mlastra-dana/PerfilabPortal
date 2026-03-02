@@ -1,6 +1,7 @@
 import { FormEvent, ReactNode, useMemo, useState } from "react";
 import { Link, Navigate, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { ResultDocument } from "@/app/types";
+import { AccessPageTemplate } from "@/components/AccessPageTemplate";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
@@ -571,52 +572,17 @@ export function IndustryAccessPage() {
   };
 
   return (
-    <DanaLayout>
-      <section className="mx-auto max-w-xl px-4 py-16">
-        <Card className={danaPanel}>
-          <h1 className="text-2xl font-bold">{titleMap[industry]}</h1>
-          <p className="mt-2 text-sm text-brand-muted">Ingresa tus datos para ver tus documentos.</p>
-
-          <form className="mt-5 space-y-3" onSubmit={onSubmit}>
-            <div>
-              <Label htmlFor="industry-doc">Cédula / Documento</Label>
-              <Input
-                id="industry-doc"
-                value={documentId}
-                onChange={(event) => setDocumentId(event.target.value)}
-                placeholder="Ej. V-12000001"
-                className={danaField}
-                required
-              />
-            </div>
-            {isInsurer ? (
-              <div>
-                <Label htmlFor="industry-policy">Número de póliza</Label>
-                <Input
-                  id="industry-policy"
-                  value={policy}
-                  onChange={(event) => setPolicy(event.target.value)}
-                  placeholder="Ej. POL-998100"
-                  className={danaField}
-                  required
-                />
-              </div>
-            ) : null}
-            {error ? <Alert variant="warn">{error}</Alert> : null}
-            <Button type="submit" className={danaButtonPrimary} style={danaSolidStyle}>Ver mis documentos</Button>
-          </form>
-
-          <div className="mt-4 rounded-xl border border-brand-border bg-brand-surface p-3 text-sm">
-            <p className="font-semibold">Datos de prueba</p>
-            <ul className="mt-1 space-y-1 text-brand-muted">
-              {industrySamples[industry].map((sample) => (
-                <li key={sample}>• {sample}</li>
-              ))}
-            </ul>
-          </div>
-        </Card>
-      </section>
-    </DanaLayout>
+    <AccessPageTemplate
+      industryName={titleMap[industry].replace("Acceso ", "")}
+      documentId={documentId}
+      onDocumentIdChange={setDocumentId}
+      onSubmit={onSubmit}
+      demoIds={industrySamples[industry]}
+      error={error}
+      showPolicyField={isInsurer}
+      policyValue={policy}
+      onPolicyChange={setPolicy}
+    />
   );
 }
 
