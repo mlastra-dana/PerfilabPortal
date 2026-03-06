@@ -84,18 +84,18 @@ function DocumentPreviewModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" role="dialog" aria-modal="true">
       <Card className={`max-h-[90vh] w-full max-w-5xl overflow-hidden p-0 ${danaPanel}`}>
-        <div className="flex items-center justify-between border-b border-brand-border px-4 py-3">
+        <div className="flex flex-col gap-3 border-b border-brand-border px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="font-semibold">{document.title || document.studyName}</p>
             <p className="text-xs text-brand-muted">{(document.date || document.studyDate || "").slice(0, 10)}</p>
           </div>
-          <div className="flex items-center gap-2">
-            <Button className={danaButtonSecondary} style={danaSolidStyle} onClick={() => onDownload(document)}>Descargar</Button>
-            <Button className={danaButtonDark} style={danaSolidStyle} onClick={onClose}>Cerrar</Button>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Button className={`w-full sm:w-auto ${danaButtonSecondary}`} style={danaSolidStyle} onClick={() => onDownload(document)}>Descargar</Button>
+            <Button className={`w-full sm:w-auto ${danaButtonDark}`} style={danaSolidStyle} onClick={onClose}>Cerrar</Button>
           </div>
         </div>
 
-        <div className="h-[72vh] bg-brand-surface p-4">
+        <div className="h-[60vh] bg-brand-surface p-3 sm:h-[72vh] sm:p-4">
           {docType === "image" ? (
             <img src={url} alt={document.title || document.studyName} className="h-full w-full rounded-xl object-contain" />
           ) : (
@@ -149,7 +149,7 @@ function ShareDocumentModal({
         </div>
 
         <div className="mt-4 grid gap-2 sm:grid-cols-3">
-          <Button className={danaButtonSecondary} style={danaSolidStyle} onClick={onCopy}>{copied ? "Copiado" : "Copiar enlace"}</Button>
+          <Button className={`w-full ${danaButtonSecondary}`} style={danaSolidStyle} onClick={onCopy}>{copied ? "Copiado" : "Copiar enlace"}</Button>
           <a href={whatsappUrl} target="_blank" rel="noreferrer">
             <Button className={`w-full ${danaButtonPrimary}`} style={danaSolidStyle}>WhatsApp</Button>
           </a>
@@ -159,7 +159,7 @@ function ShareDocumentModal({
         </div>
 
         <div className="mt-4 flex justify-end">
-          <Button className={danaButtonSecondary} style={danaSolidStyle} onClick={onClose}>Cerrar</Button>
+          <Button className={`w-full sm:w-auto ${danaButtonSecondary}`} style={danaSolidStyle} onClick={onClose}>Cerrar</Button>
         </div>
       </Card>
     </div>
@@ -342,9 +342,9 @@ export function PatientMedicalResultsPage() {
                 </div>
               </div>
 
-              <div className="mt-4 flex justify-end gap-2">
-                <Button className={danaButtonSecondary} style={danaSolidStyle} onClick={clearFilters}>Limpiar</Button>
-                <Button className={danaButtonPrimary} style={danaSolidStyle} onClick={applyFilters}>Buscar</Button>
+              <div className="mt-4 flex flex-col justify-end gap-2 sm:flex-row">
+                <Button className={`w-full sm:w-auto ${danaButtonSecondary}`} style={danaSolidStyle} onClick={clearFilters}>Limpiar</Button>
+                <Button className={`w-full sm:w-auto ${danaButtonPrimary}`} style={danaSolidStyle} onClick={applyFilters}>Buscar</Button>
               </div>
             </Card>
 
@@ -403,10 +403,10 @@ export function PatientMedicalResultsPage() {
                         <p className="font-semibold">{doc.title || doc.studyName}</p>
                         <p className="text-xs text-brand-muted">{typeLabel} · {dateLabel}</p>
                         <p className="mt-1 text-xs text-brand-muted">{resolveStatusLabel(doc.status)}</p>
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          <Button className={danaButtonSecondary} style={danaSolidStyle} onClick={() => openDocument(doc)}>Ver</Button>
-                          <Button className={danaButtonPrimary} style={danaSolidStyle} onClick={() => downloadDocument(doc)}>Descargar</Button>
-                          <Button className={danaButtonDark} style={danaSolidStyle} onClick={() => setShareDoc(doc)}>Compartir</Button>
+                        <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+                          <Button className={`w-full sm:w-auto ${danaButtonSecondary}`} style={danaSolidStyle} onClick={() => openDocument(doc)}>Ver</Button>
+                          <Button className={`w-full sm:w-auto ${danaButtonPrimary}`} style={danaSolidStyle} onClick={() => downloadDocument(doc)}>Descargar</Button>
+                          <Button className={`w-full sm:w-auto ${danaButtonDark}`} style={danaSolidStyle} onClick={() => setShareDoc(doc)}>Compartir</Button>
                         </div>
                       </div>
                     );

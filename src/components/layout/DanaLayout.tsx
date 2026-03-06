@@ -18,9 +18,9 @@ export function DanaLayout({ children }: Props) {
   return (
     <div className="min-h-screen bg-[#f5f5f5] text-[#2d3138]">
       <header className="border-b border-[#e5e7eb] bg-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3">
           <Link to="/" aria-label="Volver al inicio multiempresa">
-            <img src="/brand/logo-danaconnect-horizontal.png" alt="DANAconnect" className="h-10 w-auto object-contain" />
+            <img src="/brand/logo-danaconnect-horizontal.png" alt="DANAconnect" className="h-10 w-auto max-w-[190px] object-contain sm:max-w-none" />
           </Link>
           <div className="hidden items-center gap-6 text-sm text-[#5b6068] md:flex">
             <span>Platform</span>
@@ -30,7 +30,7 @@ export function DanaLayout({ children }: Props) {
           </div>
           <div className="flex items-center gap-3">
             {showExit ? (
-              <Button className={danaButtonPrimary} style={danaSolidStyle} onClick={exitToSelector}>
+              <Button className={`w-full sm:w-auto ${danaButtonPrimary}`} style={danaSolidStyle} onClick={exitToSelector}>
                 Salir
               </Button>
             ) : null}

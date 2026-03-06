@@ -41,9 +41,9 @@ export function AccessPageTemplate({
   return (
     <div className="min-h-screen bg-[#efefef] text-[#2d3138]">
       <header className="border-b border-[#e5e7eb] bg-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-4">
           <Link to="/multi" aria-label="Volver al inicio multiempresa">
-            <img src="/brand/logo-danaconnect-horizontal.png" alt="DanaConnect" className="h-10 w-auto object-contain" />
+            <img src="/brand/logo-danaconnect-horizontal.png" alt="DanaConnect" className="h-10 w-auto max-w-[190px] object-contain sm:max-w-none" />
           </Link>
           <nav className="hidden items-center gap-8 text-[1.04rem] text-[#444b54] lg:flex">
             <a href="#" className="hover:text-[#1f2937]">Platform</a>
@@ -51,14 +51,14 @@ export function AccessPageTemplate({
             <a href="#" className="hover:text-[#1f2937]">Services</a>
             <a href="#" className="hover:text-[#1f2937]">Resources</a>
           </nav>
-          <Button className={danaButtonPrimary} style={danaSolidStyle} onClick={exitToSelector}>
+          <Button className={`w-full sm:w-auto ${danaButtonPrimary}`} style={danaSolidStyle} onClick={exitToSelector}>
             Salir
           </Button>
         </div>
       </header>
 
-      <section className="mx-auto max-w-7xl px-4 py-16 md:py-24">
-        <Card className="mx-auto w-full max-w-3xl rounded-2xl border border-[#d9dde2] bg-white p-8 shadow-none">
+      <section className="mx-auto max-w-7xl px-4 py-10 sm:py-16 md:py-24">
+        <Card className="mx-auto w-full max-w-3xl rounded-2xl border border-[#d9dde2] bg-white p-5 shadow-none sm:p-8">
           <h1 className="text-2xl font-bold">Acceso {industryName}</h1>
           <p className="mt-2 text-sm text-brand-muted">Ingresa tus datos para ver tus documentos.</p>
 
@@ -91,7 +91,7 @@ export function AccessPageTemplate({
 
             {error ? <Alert variant="warn">{error}</Alert> : null}
 
-            <Button type="submit" className={danaButtonPrimary} style={danaSolidStyle}>
+            <Button type="submit" className={`w-full sm:w-auto ${danaButtonPrimary}`} style={danaSolidStyle}>
               Ver mis documentos
             </Button>
           </form>
@@ -109,4 +109,3 @@ export function AccessPageTemplate({
     </div>
   );
 }
-

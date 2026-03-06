@@ -160,14 +160,14 @@ function DocumentPreviewModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" role="dialog" aria-modal="true">
       <Card className={`max-h-[90vh] w-full max-w-5xl overflow-hidden p-0 ${danaPanel}`}>
-        <div className="flex items-center justify-between border-b border-brand-border px-4 py-3">
+        <div className="flex flex-col gap-3 border-b border-brand-border px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="font-semibold">{document.title || document.studyName}</p>
             <p className="text-xs text-brand-muted">{(document.date || document.studyDate || "").slice(0, 10)}</p>
           </div>
-          <Button className={danaButtonDark} style={danaSolidStyle} onClick={onClose}>Cerrar</Button>
+          <Button className={`w-full sm:w-auto ${danaButtonDark}`} style={danaSolidStyle} onClick={onClose}>Cerrar</Button>
         </div>
-        <div className="h-[72vh] bg-brand-surface p-4">
+        <div className="h-[60vh] bg-brand-surface p-3 sm:h-[72vh] sm:p-4">
           {type === "image" ? (
             <img src={url} alt={document.title || document.studyName} className="h-full w-full rounded-xl object-contain" />
           ) : (
@@ -213,12 +213,12 @@ function ShareModal({
           <Input id="secure-link-multi" readOnly value={secureUrl} className={danaField} />
         </div>
         <div className="mt-4 grid gap-2 sm:grid-cols-3">
-          <Button className={danaButtonSecondary} style={danaSolidStyle} onClick={onCopy}>{copied ? "Copiado" : "Copiar enlace"}</Button>
+          <Button className={`w-full ${danaButtonSecondary}`} style={danaSolidStyle} onClick={onCopy}>{copied ? "Copiado" : "Copiar enlace"}</Button>
           <a href={whatsapp} target="_blank" rel="noreferrer"><Button className={`w-full ${danaButtonPrimary}`} style={danaSolidStyle}>WhatsApp</Button></a>
           <a href={email}><Button className={`w-full ${danaButtonDark}`} style={danaSolidStyle}>Correo</Button></a>
         </div>
         <div className="mt-4 flex justify-end">
-          <Button className={danaButtonSecondary} style={danaSolidStyle} onClick={onClose}>Cerrar</Button>
+          <Button className={`w-full sm:w-auto ${danaButtonSecondary}`} style={danaSolidStyle} onClick={onClose}>Cerrar</Button>
         </div>
       </Card>
     </div>
@@ -409,10 +409,10 @@ function IndustryDocumentsBoard({
                       <p className="font-semibold">{doc.title || doc.studyName}</p>
                       <p className="text-xs text-brand-muted">{displayServiceLabel(doc.service || "General")} · {(doc.date || doc.studyDate || "").slice(0, 10)}</p>
                       <p className="mt-1 text-xs text-brand-muted">{statusLabel(doc.status)}</p>
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        <Button className={danaButtonSecondary} style={danaSolidStyle} onClick={() => setPreviewDoc(doc)}>Ver</Button>
-                        <Button className={danaButtonPrimary} style={danaSolidStyle} onClick={() => onDownload(doc)}>Descargar</Button>
-                        <Button className={danaButtonDark} style={danaSolidStyle} onClick={() => setShareDoc(doc)}>Compartir</Button>
+                      <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+                        <Button className={`w-full sm:w-auto ${danaButtonSecondary}`} style={danaSolidStyle} onClick={() => setPreviewDoc(doc)}>Ver</Button>
+                        <Button className={`w-full sm:w-auto ${danaButtonPrimary}`} style={danaSolidStyle} onClick={() => onDownload(doc)}>Descargar</Button>
+                        <Button className={`w-full sm:w-auto ${danaButtonDark}`} style={danaSolidStyle} onClick={() => setShareDoc(doc)}>Compartir</Button>
                       </div>
                     </div>
                   ))}
@@ -438,25 +438,25 @@ export function MultiIndustryLandingPage() {
       <header className="border-b border-[#e5e7eb] bg-white">
         <div className="mx-auto flex max-w-7xl items-center px-4 py-4">
           <Link to="/multi" aria-label="Volver al inicio multiempresa">
-            <img src="/brand/logo-danaconnect-horizontal.png" alt="DANAconnect" className="h-14 w-auto object-contain" />
+            <img src="/brand/logo-danaconnect-horizontal.png" alt="DANAconnect" className="h-12 w-auto max-w-[220px] object-contain sm:h-14 sm:max-w-none" />
           </Link>
         </div>
       </header>
 
       <section style={{ backgroundColor: "rgb(var(--dc-orange))" }}>
-        <div className="mx-auto max-w-7xl px-4 py-20 text-white md:py-24">
+        <div className="mx-auto max-w-7xl px-4 py-14 text-white sm:py-16 md:py-24">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/90">DANAconnect</p>
-          <h1 className="mt-5 max-w-4xl text-5xl font-extrabold leading-tight md:text-7xl">
+          <h1 className="mt-5 max-w-4xl text-3xl font-extrabold leading-tight sm:text-5xl md:text-7xl">
             Multiempresas de visual/descarga documentos
           </h1>
-          <p className="mt-6 max-w-3xl text-xl text-white/90">
+          <p className="mt-6 max-w-3xl text-base text-white/90 sm:text-lg md:text-xl">
             Selecciona tu industria y accede a tus documentos con una experiencia unificada.
           </p>
         </div>
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-10 md:py-12">
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {industries.map((item) => (
             <button
               key={item.key}

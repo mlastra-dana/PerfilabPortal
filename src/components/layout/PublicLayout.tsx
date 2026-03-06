@@ -8,7 +8,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-brand-bg">
       <header className="border-b border-brand-border bg-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3">
           <div className="flex items-center gap-3">
             <img
               src="/brand/logo-danaconnect-horizontal.png"
@@ -22,7 +22,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
             <a href="#blog">Blog</a>
             <a href="#contacto">Contacto</a>
           </nav>
-          <Button variant="ghost" onClick={exitToSelector}>Salir</Button>
+          <Button variant="ghost" className="w-full sm:w-auto" onClick={exitToSelector}>Salir</Button>
         </div>
       </header>
 
