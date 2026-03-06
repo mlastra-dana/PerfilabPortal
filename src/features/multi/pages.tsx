@@ -16,11 +16,26 @@ import { universityDocuments } from "@/mocks/universidad/documents";
 
 type Industry = "laboratorio" | "universidad" | "rrhh" | "aseguradora";
 
-const industries: Array<{ key: Industry; label: string }> = [
-  { key: "laboratorio", label: "Servicios médicos" },
-  { key: "universidad", label: "Universidad" },
-  { key: "rrhh", label: "RRHH" },
-  { key: "aseguradora", label: "Aseguradora" },
+const industries: Array<{
+  key: Industry;
+  label: string;
+}> = [
+  {
+    key: "laboratorio",
+    label: "Servicios medicos",
+  },
+  {
+    key: "universidad",
+    label: "Universidad",
+  },
+  {
+    key: "rrhh",
+    label: "RRHH",
+  },
+  {
+    key: "aseguradora",
+    label: "Aseguradora",
+  },
 ];
 
 const danaButtonPrimary = "rounded-pill border border-[rgb(var(--dc-orange))] bg-[rgb(var(--dc-orange))] text-white shadow-none hover:opacity-90";
@@ -308,7 +323,7 @@ function IndustryDocumentsBoard({
         <Card className={danaPanel}>
           <div className="flex flex-wrap items-center justify-between gap-2">
                 <h1 className="text-xl font-bold">Documentos {industry.toUpperCase()}</h1>
-            <span className="rounded-pill bg-brand-surface px-3 py-1 text-xs font-semibold text-brand-muted">
+            <span className="w-full rounded-pill bg-brand-surface px-3 py-1 text-xs font-semibold text-brand-muted sm:w-auto">
               Documento: {documentId || "N/A"}
             </span>
           </div>
@@ -335,12 +350,12 @@ function IndustryDocumentsBoard({
             ) : null}
 
             <Card className={`mt-4 ${danaPanel}`}>
-              <div className="grid gap-3 md:grid-cols-12">
-                <div className="md:col-span-5">
+              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-12">
+                <div className="sm:col-span-2 xl:col-span-5">
                   <Label htmlFor={`search-${industry}`}>Buscar</Label>
                   <Input id={`search-${industry}`} value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Nombre del documento" className={danaField} />
                 </div>
-                <div className="md:col-span-3">
+                <div className="sm:col-span-1 xl:col-span-3">
                   <Label htmlFor={`service-${industry}`}>Servicio/Tipo</Label>
                   <select
                     id={`service-${industry}`}
@@ -353,11 +368,11 @@ function IndustryDocumentsBoard({
                     ))}
                   </select>
                 </div>
-                <div className="md:col-span-2">
+                <div className="sm:col-span-1 xl:col-span-2">
                   <Label htmlFor={`from-${industry}`}>Desde</Label>
                   <Input id={`from-${industry}`} type="date" value={from} onChange={(e) => setFrom(e.target.value)} className={danaField} />
                 </div>
-                <div className="md:col-span-2">
+                <div className="sm:col-span-1 xl:col-span-2">
                   <Label htmlFor={`to-${industry}`}>Hasta</Label>
                   <Input id={`to-${industry}`} type="date" value={to} onChange={(e) => setTo(e.target.value)} className={danaField} />
                 </div>
@@ -370,7 +385,7 @@ function IndustryDocumentsBoard({
               </Card>
             ) : (
               <div className="mt-4 overflow-hidden rounded-xl border border-[#d9dde2] bg-white">
-                <div className="hidden overflow-auto md:block">
+                <div className="hidden overflow-auto lg:block">
                   <table className="w-full min-w-[900px] text-left text-sm">
                     <thead className="bg-[#f3f4f6] text-[#616773]">
                       <tr>
@@ -403,7 +418,7 @@ function IndustryDocumentsBoard({
                     </tbody>
                   </table>
                 </div>
-                <div className="space-y-3 p-3 md:hidden">
+                <div className="space-y-3 p-3 lg:hidden">
                   {filtered.map((doc) => (
                     <div key={doc.id} className="rounded-md border border-[#d9dde2] p-3">
                       <p className="font-semibold">{doc.title || doc.studyName}</p>
@@ -431,7 +446,7 @@ function IndustryDocumentsBoard({
 
 export function MultiIndustryLandingPage() {
   const navigate = useNavigate();
-  const [industry, setIndustry] = useState<Industry>("laboratorio");
+  const [selectedIndustry, setSelectedIndustry] = useState<Industry | null>(null);
 
   return (
     <div className="min-h-screen bg-[#efefef] text-[#2d3138]">
@@ -449,32 +464,34 @@ export function MultiIndustryLandingPage() {
           <h1 className="mt-5 max-w-4xl text-3xl font-extrabold leading-tight sm:text-5xl md:text-7xl">
             Multiempresas de visual/descarga documentos
           </h1>
-          <p className="mt-6 max-w-3xl text-base text-white/90 sm:text-lg md:text-xl">Selecciona tu industria y accede a tus documentos.</p>
+          <p className="mt-6 max-w-3xl text-base text-white/90 sm:text-lg md:text-xl">Seleccione el tipo de empresa y accede a los documentos.</p>
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-10 md:py-12">
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="mx-auto max-w-6xl px-4 py-10 md:py-12">
+        <div className="flex flex-wrap justify-center gap-4">
           {industries.map((item) => (
             <button
               key={item.key}
               type="button"
               onClick={() => {
-                setIndustry(item.key);
-                navigate(`/access/${item.key}`);
+                setSelectedIndustry(item.key);
+                window.setTimeout(() => navigate(`/access/${item.key}`), 140);
               }}
-              className={`rounded-2xl border p-6 text-left transition ${
-                industry === item.key
-                  ? "border-[rgb(var(--dc-orange))] bg-[#fff5ef] shadow-[0_1px_8px_rgba(0,0,0,0.06)]"
-                  : "border-[#d9dde2] bg-white hover:border-[rgb(var(--dc-orange))/0.7]"
+              className={`min-h-[192px] w-full rounded-[1.75rem] border px-8 py-8 text-left shadow-none transition duration-200 sm:w-[280px] lg:w-[250px] ${
+                selectedIndustry === item.key
+                  ? "border-[rgb(var(--dc-orange))] bg-[#f4ebe7] shadow-[0_0_0_1px_rgba(221,87,54,0.18)]"
+                  : "border-[#d1d5db] bg-white hover:border-[#c8ced6]"
               }`}
             >
-              <p className="text-sm uppercase tracking-[0.12em] text-[#6b7280]">Industria</p>
-              <p className="mt-2 text-[2rem] font-bold leading-none">{item.label}</p>
+              <div className="flex h-full items-center">
+                <p className="max-w-[10ch] text-[1.85rem] font-bold leading-[0.95] tracking-[-0.03em] text-[#2f3540] sm:text-[2rem]">
+                  {item.label}
+                </p>
+              </div>
             </button>
           ))}
         </div>
-
       </section>
     </div>
   );

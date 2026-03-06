@@ -275,7 +275,7 @@ export function PatientMedicalResultsPage() {
         <Card className={danaPanel}>
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h1 className="text-xl font-bold">Documentos SERVICIOS MEDICOS</h1>
-            <span className="rounded-pill bg-brand-surface px-3 py-1 text-xs font-semibold text-brand-muted">
+            <span className="w-full rounded-pill bg-brand-surface px-3 py-1 text-xs font-semibold text-brand-muted sm:w-auto">
               Documento: {patient?.documentId || "N/A"}
             </span>
           </div>
@@ -284,8 +284,8 @@ export function PatientMedicalResultsPage() {
         {!patient ? (
           <Card className={`mt-4 ${danaPanel}`}>
             <Alert variant="warn">No hay resultados para esta cédula.</Alert>
-            <Link to="/access" className="mt-4 inline-block">
-              <Button className={danaButtonPrimary} style={danaSolidStyle}>Ingresar cédula</Button>
+            <Link to="/access" className="mt-4 inline-block w-full sm:w-auto">
+              <Button className={`w-full sm:w-auto ${danaButtonPrimary}`} style={danaSolidStyle}>Ingresar cédula</Button>
             </Link>
           </Card>
         ) : (
@@ -303,8 +303,8 @@ export function PatientMedicalResultsPage() {
             </Card>
 
             <Card className={`mt-4 ${danaPanel}`}>
-              <div className="grid gap-3 md:grid-cols-12">
-                <div className="md:col-span-5">
+              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-12">
+                <div className="sm:col-span-2 xl:col-span-5">
                   <Label htmlFor="search-doc">Buscar</Label>
                   <Input
                     id="search-doc"
@@ -315,7 +315,7 @@ export function PatientMedicalResultsPage() {
                   />
                 </div>
 
-                <div className="md:col-span-3">
+                <div className="sm:col-span-1 xl:col-span-3">
                   <Label htmlFor="service-doc">Servicio/Tipo</Label>
                   <select
                     id="service-doc"
@@ -331,12 +331,12 @@ export function PatientMedicalResultsPage() {
                   </select>
                 </div>
 
-                <div className="md:col-span-2">
+                <div className="sm:col-span-1 xl:col-span-2">
                   <Label htmlFor="from-doc">Desde</Label>
                   <Input id="from-doc" type="date" value={fromDateInput} onChange={(event) => setFromDateInput(event.target.value)} className={danaField} />
                 </div>
 
-                <div className="md:col-span-2">
+                <div className="sm:col-span-1 xl:col-span-2">
                   <Label htmlFor="to-doc">Hasta</Label>
                   <Input id="to-doc" type="date" value={toDateInput} onChange={(event) => setToDateInput(event.target.value)} className={danaField} />
                 </div>
@@ -354,7 +354,7 @@ export function PatientMedicalResultsPage() {
               </Card>
             ) : (
               <div className="mt-4 overflow-hidden rounded-xl border border-[#d9dde2] bg-white">
-                <div className="hidden overflow-auto md:block">
+                <div className="hidden overflow-auto lg:block">
                   <table className="w-full min-w-[900px] text-left text-sm">
                     <thead className="bg-[#f3f4f6] text-[#616773]">
                       <tr>
@@ -393,7 +393,7 @@ export function PatientMedicalResultsPage() {
                   </table>
                 </div>
 
-                <div className="space-y-3 p-3 md:hidden">
+                <div className="space-y-3 p-3 lg:hidden">
                   {docs.map((doc) => {
                     const typeLabel = displayServiceLabel(resolveDocumentService(doc));
                     const dateLabel = (doc.createdAt || doc.date || doc.studyDate || "").slice(0, 10);
