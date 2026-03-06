@@ -459,7 +459,7 @@ export function MultiIndustryLandingPage() {
       </header>
 
       <section style={{ backgroundColor: "rgb(var(--dc-orange))" }}>
-        <div className="mx-auto max-w-7xl px-4 py-14 text-white sm:py-16 md:py-24">
+        <div className="mx-auto max-w-7xl px-4 py-10 text-white sm:py-12 md:py-14">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/90">DANAconnect</p>
           <h1 className="mt-5 max-w-4xl text-3xl font-extrabold leading-tight sm:text-5xl md:text-7xl">
             Multiempresas de visual/descarga documentos
@@ -468,7 +468,7 @@ export function MultiIndustryLandingPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 py-10 md:py-12">
+      <section className="mx-auto max-w-5xl px-4 py-6 md:py-8">
         <div className="flex flex-wrap justify-center gap-4">
           {industries.map((item) => (
             <button
@@ -478,14 +478,14 @@ export function MultiIndustryLandingPage() {
                 setSelectedIndustry(item.key);
                 window.setTimeout(() => navigate(`/access/${item.key}`), 140);
               }}
-              className={`min-h-[192px] w-full rounded-[1.75rem] border px-8 py-8 text-left shadow-none transition duration-200 sm:w-[280px] lg:w-[250px] ${
+              className={`min-h-[138px] w-full rounded-[1.35rem] border px-6 py-5 text-left shadow-none transition duration-200 sm:w-[215px] lg:w-[205px] ${
                 selectedIndustry === item.key
                   ? "border-[rgb(var(--dc-orange))] bg-[#f4ebe7] shadow-[0_0_0_1px_rgba(221,87,54,0.18)]"
                   : "border-[#d1d5db] bg-white hover:border-[rgb(var(--dc-orange))] hover:bg-[#f4ebe7] hover:shadow-[0_0_0_1px_rgba(221,87,54,0.12)]"
               }`}
             >
               <div className="flex h-full items-center">
-                <p className="max-w-[10ch] text-[1.85rem] font-bold leading-[0.95] tracking-[-0.03em] text-[#2f3540] sm:text-[2rem]">
+                <p className="max-w-[9ch] text-[1.4rem] font-bold leading-[0.95] tracking-[-0.03em] text-[#2f3540] sm:text-[1.58rem]">
                   {item.label}
                 </p>
               </div>
