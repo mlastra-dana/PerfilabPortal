@@ -449,9 +449,7 @@ export function MultiIndustryLandingPage() {
           <h1 className="mt-5 max-w-4xl text-3xl font-extrabold leading-tight sm:text-5xl md:text-7xl">
             Multiempresas de visual/descarga documentos
           </h1>
-          <p className="mt-6 max-w-3xl text-base text-white/90 sm:text-lg md:text-xl">
-            Selecciona tu industria y accede a tus documentos con una experiencia unificada.
-          </p>
+          <p className="mt-6 max-w-3xl text-base text-white/90 sm:text-lg md:text-xl">Selecciona tu industria y accede a tus documentos.</p>
         </div>
       </section>
 
