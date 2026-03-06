@@ -436,28 +436,10 @@ export function MultiIndustryLandingPage() {
   return (
     <div className="min-h-screen bg-[#efefef] text-[#2d3138]">
       <header className="border-b border-[#e5e7eb] bg-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-end gap-6 px-4 py-2 text-xs text-[#6b7280]">
-          <a href="#" className="hover:text-[#374151]">Contacto</a>
-          <a href="#" className="hover:text-[#374151]">Aliados Comerciales</a>
-          <a href="#" className="hover:text-[#374151]">English</a>
-          <a href="#" className="hover:text-[#374151]">Login</a>
-        </div>
-      </header>
-
-      <header className="border-b border-[#e5e7eb] bg-white">
-        <div className="mx-auto grid max-w-7xl grid-cols-[auto_1fr] items-center gap-6 px-4 py-4">
+        <div className="mx-auto flex max-w-7xl items-center px-4 py-4">
           <Link to="/multi" aria-label="Volver al inicio multiempresa">
             <img src="/brand/logo-danaconnect-horizontal.png" alt="DANAconnect" className="h-14 w-auto object-contain" />
           </Link>
-
-          <nav className="hidden items-center justify-center gap-8 text-[1.04rem] text-[#444b54] lg:flex">
-            <a href="#" className="hover:text-[#1f2937]">Plataforma</a>
-            <a href="#" className="hover:text-[#1f2937]">Casos de uso</a>
-            <a href="#" className="hover:text-[#1f2937]">Servicios</a>
-            <a href="#" className="hover:text-[#1f2937]">Recursos</a>
-            <a href="#" className="hover:text-[#1f2937]">La empresa</a>
-            <a href="#" className="hover:text-[#1f2937]">Precios</a>
-          </nav>
         </div>
       </header>
 
@@ -479,7 +461,10 @@ export function MultiIndustryLandingPage() {
             <button
               key={item.key}
               type="button"
-              onClick={() => setIndustry(item.key)}
+              onClick={() => {
+                setIndustry(item.key);
+                navigate(`/access/${item.key}`);
+              }}
               className={`rounded-2xl border p-6 text-left transition ${
                 industry === item.key
                   ? "border-[rgb(var(--dc-orange))] bg-[#fff5ef] shadow-[0_1px_8px_rgba(0,0,0,0.06)]"
@@ -492,11 +477,6 @@ export function MultiIndustryLandingPage() {
           ))}
         </div>
 
-        <div className="mt-8 flex justify-end md:mt-10">
-          <Button className={danaButtonPrimary} style={danaSolidStyle} onClick={() => navigate(`/access/${industry}`)}>
-            Continuar
-          </Button>
-        </div>
       </section>
     </div>
   );
