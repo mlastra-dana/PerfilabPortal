@@ -481,7 +481,7 @@ export function MultiIndustryLandingPage() {
               className={`min-h-[192px] w-full rounded-[1.75rem] border px-8 py-8 text-left shadow-none transition duration-200 sm:w-[280px] lg:w-[250px] ${
                 selectedIndustry === item.key
                   ? "border-[rgb(var(--dc-orange))] bg-[#f4ebe7] shadow-[0_0_0_1px_rgba(221,87,54,0.18)]"
-                  : "border-[#d1d5db] bg-white hover:border-[#c8ced6]"
+                  : "border-[#d1d5db] bg-white hover:border-[rgb(var(--dc-orange))] hover:bg-[#f4ebe7] hover:shadow-[0_0_0_1px_rgba(221,87,54,0.12)]"
               }`}
             >
               <div className="flex h-full items-center">
